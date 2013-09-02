@@ -31,6 +31,15 @@ class FormView extends View{
 		}
 	}
 
+	private function createPostView(){
+
+
+		$this->publish();
+		if(!empty($html)){
+			$html->clear();
+		}
+	}
+
 	private function createConfirmView(){
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			foreach($enq['ERROR_CHECK'] as $error => $value){
@@ -49,15 +58,19 @@ class FormView extends View{
 					$tag = "<img src=\"{$this->model->postData[$enq['NAME']]}\">";
 					break;
 				case 'CHECKBOX':
-					foreach($this->model->postData[$enq['NAME']] as $ck => $cv){
-						$label .= $this->model->getPostedLabelFromKey($enq['NAME'],$cv).",";
+					if(!empty($this->model->postData[$enq['NAME']])){
+						foreach($this->model->postData[$enq['NAME']] as $ck => $cv){
+							$label .= $this->model->getPostedLabelFromKey($enq['NAME'],$cv).",";
+						}
+						$label = rtrim($label, ",");
 					}
-					$label = rtrim($label, ",");
+					
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">";
 					break;
 				case 'SELECT':
 				case 'RADIO':
 				case 'AGREE':
+				case 'HIDDEN':
 					$label = $this->model->getPostedLabelFromKey($enq['NAME'],$this->model->postData[$enq['NAME']]);
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">";
 					break;
@@ -223,7 +236,8 @@ class FormView extends View{
 					break;
 				case 'HIDDEN':
 					$style = $this->createStyle();
-					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\">\n";
+					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
+					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
 					$html = str_get_html($tag);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
 					$tag = $html->find('input',0);

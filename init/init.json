@@ -151,6 +151,14 @@
                     3
                 ]
             }
+        },
+        {
+            "NAME": "SNS",
+            "TITLE": "SNS",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {}
         }
+
     ]
 }

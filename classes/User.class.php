@@ -17,18 +17,22 @@ class User{
 		$this->setUserInfo();
 		$this->getPostedData();
 	}
-
 	public function getPostedData(){
 		$this->model->postData = (!empty($_POST))? $_POST : false;
 		$this->model->postData[key($_FILES)] = (!empty($_FILES))? $this->getUploadFile($_FILES) : false;
-		//md5(uniqid($_FILES["imagePost"]["name"].rand(),1)).".jpg";
+
+		if(!empty($_GET)){
+			foreach($_GET as $key => $value){
+				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
+			}
+		}
+
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
 				$checker = new Validator($key,$value);
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
-				//echo "result:{$enq['NAME']}={$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]}<br />\n";
 			}
 		}
 	}
@@ -37,7 +41,6 @@ class User{
 
 		return @move_uploaded_file($files["image"]["tmp_name"], $new)?$new:false;
 	}
-
 	private function getDevice(){
 		if(preg_match('/android/i',$this->userAgent) && preg_match('/mobile/i',$this->userAgent) || preg_match('/iphone/i',$this->userAgent) || preg_match('/windows phone/i',$this->userAgent)){
 			$this->device = 'smartphone';
