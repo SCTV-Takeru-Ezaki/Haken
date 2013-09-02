@@ -18,7 +18,8 @@ class Validator{
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
 		if(!empty($value)){
-			return 0;
+			$r = 0;
+			return $r;
 		}else{
 			return 1;
 		}

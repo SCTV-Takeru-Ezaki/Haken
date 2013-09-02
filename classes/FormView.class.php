@@ -22,7 +22,7 @@ class FormView extends View{
 				$this->createConfirmView();
 
 				break;
-			case "50":
+			case "post":
 				$this->createPostView();
 				break;
 			default:
@@ -40,28 +40,37 @@ class FormView extends View{
 				}
 			}
 
-			$value = 
+			$value = "";
+			$label = "";
+			$tag = "";
 			switch($enq['TYPE']){
+				case 'FILE':
+					$value = $this->model->postData[$enq['NAME']];
+					$tag = "<img src=\"{$this->model->postData[$enq['NAME']]}\">";
+					break;
+				case 'CHECKBOX':
+					foreach($this->model->postData[$enq['NAME']] as $ck => $cv){
+						$label .= $this->model->getPostedLabelFromKey($enq['NAME'],$cv).",";
+					}
+					$label = rtrim($label, ",");
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">";
+					break;
 				case 'SELECT':
-					break;
 				case 'RADIO':
-					break;
-				case 'CHECK':
-					break;
 				case 'AGREE':
+					$label = $this->model->getPostedLabelFromKey($enq['NAME'],$this->model->postData[$enq['NAME']]);
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">";
 					break;
 				default:
 					$value = $this->model->postData[$enq['NAME']];
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$value}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 			}
-			$tag = "<span id=\"{$enq['NAME']}Confirm\">{$value}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
 			$el->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span>".$tag;
 		}
 
-
-		}
 		$this->publish();
 		if(!empty($html)){
 			$html->clear();
@@ -72,13 +81,6 @@ class FormView extends View{
 	 * @contents データ
 	 */
 	private function sendPostQuery($url,$params = array()){
-		//$options = array('http' => array(
-		//	'method' => 'POST',
-		//	'content' => http_build_query($contents),
-		//));
-		//echo file_get_contents($url, false, stream_context_create($options));
-		//
-		//
 		$method = 'POST';
 		$data = http_build_query($params);
 
@@ -183,7 +185,7 @@ class FormView extends View{
 					//HTMLを生成
 					foreach($enq['PROPS']['label'] as $k =>  $v){
 						$style = $this->createStyle();
-						$tag .= "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" value=\"{$enq['PROPS']['value'][$k]}\" style=\"{$style}\">";
+						$tag .= "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}[]\" value=\"{$enq['PROPS']['value'][$k]}\" style=\"{$style}\">";
 					}
 
 					//入力済み項目を反映させる
@@ -191,8 +193,12 @@ class FormView extends View{
 					$tag="";
 					$k=0;
 					foreach($html->find('input') as $el){
-						if($this->model->getPostedValueFromKey($enq['NAME']) == $enq['PROPS']['value'][$k]){
-							$el->checked = true;
+						if(is_array($this->model->getPostedValueFromKey($enq['NAME']))){				
+							foreach($this->model->getPostedValueFromKey($enq['NAME']) as $r){
+								if($r == $enq['PROPS']['value'][$k]){
+									$el->checked = true;
+								}
+							}
 						}
 						$tag .= "<label>".$el."{$enq['PROPS']['label'][$k]}</label>\n";
 						$k++;
@@ -227,7 +233,7 @@ class FormView extends View{
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
 			//print_r($el->innertext);
-			$em = $this->getErrorMessage($enq['NAME']);
+			$em = $this->getErrorMessage($enq);
 			$el->innertext = "{$em}<span class=\"itemTitle\">{$enq['TITLE']}</span>".$tag;
 		}
 		$this->publish();
@@ -236,8 +242,14 @@ class FormView extends View{
 		}
 	}
 	//エラーメッセージを取得(つくりかけ)
-	private function getErrorMessage($name){
-		return "";
+	private function getErrorMessage($enq){
+		$message = "";
+		if(is_array($enq['ERROR_CHECK']) && !empty($enq['ERROR_CHECK'])){
+			foreach($enq['ERROR_CHECK'] as $k => $v){
+				if(!empty($this->model->errorMessage[$k]) && $v == 1) $message .= $this->model->errorMessage[$k];
+			}
+			return $message;
+		}
 	}
 
 	private function createStyle(){

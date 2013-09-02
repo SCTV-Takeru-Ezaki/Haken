@@ -21,11 +21,17 @@ class Model{
 		$this->userInfo = $userInfo;
 	}
 	public function getPostedValueFromKey($key){
-		if(is_array($this->postData)){
-			if(array_key_exists($key,$this->postData)){
-				return $this->postData[$key];
-			}
+		if(is_array($this->postData) && array_key_exists($key,$this->postData)){
+			return $this->postData[$key];
 		}
+	}
+	public function getPostedLabelFromKey($name,$value){
+		foreach($this->init['enqueteList'] as $k => $v){
+			if($v['NAME'] == $name){
+				$key = array_search($value,$v['PROPS']['value']);
+				return $v['PROPS']['label'][$key];
+			}
+		}		
 	}
 	/* checker */
 	public function isPostedDataFromKey($key){

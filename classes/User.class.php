@@ -28,7 +28,7 @@ class User{
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
 				$checker = new Validator($key,$value);
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
-				echo "result:{$enq['NAME']}={$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]}<br />\n";
+				//echo "result:{$enq['NAME']}={$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]}<br />\n";
 			}
 		}
 	}
