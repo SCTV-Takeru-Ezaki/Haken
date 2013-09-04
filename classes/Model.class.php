@@ -27,7 +27,7 @@ class Model{
 	}
 	public function getPostedLabelFromKey($name,$value){
 		foreach($this->init['enqueteList'] as $k => $v){
-			if($v['NAME'] == $name){
+			if($v['NAME'] == $name && is_array($v['PROPS']['value'])){
 				$key = array_search($value,$v['PROPS']['value']);
 				return $v['PROPS']['label'][$key];
 			}

@@ -5,17 +5,21 @@ ini_set('error_reporting', E_ALL);
 //オートロードを有効に
 require_once 'lib/autoload.php';
 
+define("POST_EXEC","post.php");
 define("UPLOAD_DIR","uploads/");
 define("UPLOAD_MAXSIZE",5);
+
+define("INIT_FILE","init/init.json");
+define("ERROR_MESSAGE_FILE",,"init/errorMessage.json");
 
 //モデルを構築し
 $model = new Model();
 
 //設定情報とエラメをロード。設定情報とエラメ情報をadd
-$init = new JSONLoader('init/init.json');
+$init = new JSONLoader(INIT_FILE);
 $model->setInit($init->getJsonData());
 
-$errorMessage = new JSONLoader('init/errorMessage.json');
+$errorMessage = new JSONLoader(ERROR_MESSAGE_FILE);
 $model->setErrorMessage($errorMessage->getJsonData());
 
 //ユーザー情報をModelへadd

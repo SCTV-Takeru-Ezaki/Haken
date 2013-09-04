@@ -20,7 +20,7 @@ class User{
 	public function getPostedData(){
 		$this->model->postData = (!empty($_POST))? $_POST : false;
 		$this->model->postData[key($_FILES)] = (!empty($_FILES))? $this->getUploadFile($_FILES) : false;
-
+		//print_r($this->model->postData);
 		if(!empty($_GET)){
 			foreach($_GET as $key => $value){
 				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
@@ -35,6 +35,7 @@ class User{
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
 			}
 		}
+		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function getUploadFile($files){
 		$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".jpg";

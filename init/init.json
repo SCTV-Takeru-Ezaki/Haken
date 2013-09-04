@@ -107,7 +107,7 @@
         {
             "NAME": "enquete8",
             "TITLE": "テキスト4",
-            "TYPE": "TEXT",
+            "TYPE": "TEXTAREA",
             "ERROR_CHECK": {},
             "PROPS": {
                 "size": 32,
@@ -154,7 +154,7 @@
         },
         {
             "NAME": "SNS",
-            "TITLE": "SNS",
+            "TITLE": "",
             "TYPE": "HIDDEN",
             "ERROR_CHECK": {},
             "PROPS": {}

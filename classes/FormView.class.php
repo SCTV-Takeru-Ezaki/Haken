@@ -15,12 +15,8 @@ class FormView extends View{
 
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){
-			case "input":
-				$this->createFormView();
-				break;
 			case "confirm":
 				$this->createConfirmView();
-
 				break;
 			case "post":
 				$this->createPostView();
@@ -32,8 +28,9 @@ class FormView extends View{
 	}
 
 	private function createPostView(){
-
-
+		//
+		//
+		//
 		$this->publish();
 		if(!empty($html)){
 			$html->clear();
@@ -52,9 +49,9 @@ class FormView extends View{
 			$value = "";
 			$label = "";
 			$tag = "";
+			$value = (!empty($this->model->postData[$enq['NAME']]))?$this->model->postData[$enq['NAME']]:'';
 			switch($enq['TYPE']){
 				case 'FILE':
-					$value = $this->model->postData[$enq['NAME']];
 					$tag = "<img src=\"{$this->model->postData[$enq['NAME']]}\">";
 					break;
 				case 'CHECKBOX':
@@ -65,14 +62,14 @@ class FormView extends View{
 						$label = rtrim($label, ",");
 					}
 					
-					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">";
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 				case 'SELECT':
 				case 'RADIO':
 				case 'AGREE':
 				case 'HIDDEN':
-					$label = $this->model->getPostedLabelFromKey($enq['NAME'],$this->model->postData[$enq['NAME']]);
-					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">";
+					$label = (!empty($this->model->postData[$enq['NAME']]))? $this->model->getPostedLabelFromKey($enq['NAME'],$this->model->postData[$enq['NAME']]):'';
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 				default:
 					$value = $this->model->postData[$enq['NAME']];
@@ -129,7 +126,11 @@ class FormView extends View{
 			switch($enq['TYPE']){
 				case 'FILE':
 					$style = $this->createStyle();
-					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\">\n";
+					if(!empty($this->model->postData[$enq['NAME']])){
+						$tag = "<img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$this->model->postData[$enq['NAME']]}\">\n";
+					}else{
+						$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\">\n";
+					}
 					break;
 				case 'TEXT':
 					//HTMLを生成
@@ -150,8 +151,8 @@ class FormView extends View{
 
 					//入力済み項目を反映させる
 					$html = str_get_html($tag);
-					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
-					$tag = $html->find('input',0);
+					$html->find('textarea',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
+					$tag = $html->find('textarea',0);
 					break;
 				case 'SELECT':
 					//HTMLを生成
@@ -246,8 +247,7 @@ class FormView extends View{
 					break;
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
-			//print_r($el->innertext);
-			$em = $this->getErrorMessage($enq);
+			$em = ($this->model->postData['page'] != 'input')?$this->getErrorMessage($enq):'';
 			$el->innertext = "{$em}<span class=\"itemTitle\">{$enq['TITLE']}</span>".$tag;
 		}
 		$this->publish();
