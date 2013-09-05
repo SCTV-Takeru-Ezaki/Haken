@@ -1,0 +1,11 @@
+form.phpへ送信して欲しいデータ
+
+■GET or POST key/form type
+・sns_type/hidden
+SNSのタイプ。pitadmin保存用
+・sns_token/hidden
+SNS APIから発行されるトークン
+・sns_key/hidden
+任意。秘密キーなど
+・image/file
+画像を保存したファイルパス
