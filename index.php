@@ -10,7 +10,7 @@ define("UPLOAD_DIR","uploads/");
 define("UPLOAD_MAXSIZE",5);
 
 define("INIT_FILE","init/init.json");
-define("ERROR_MESSAGE_FILE",,"init/errorMessage.json");
+define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
 //モデルを構築し
 $model = new Model();
