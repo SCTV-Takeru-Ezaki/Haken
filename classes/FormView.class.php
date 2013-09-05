@@ -272,7 +272,7 @@ class FormView extends View{
 
 	private function publish() {
 		$el = $this->templateHtml->find("head",0);
-		$el->innertext = "<link rel='stylesheet' href=¥"css/{$this->model->userInfo['DEVICE']}¥.css¥">";
+		$el->innertext = "<link rel=¥"stylesheet¥" href=¥"css/{$this->model->userInfo['DEVICE']}.css¥">";
 
 		echo $this->templateHtml;
 		$this->templateHtml->clear();
