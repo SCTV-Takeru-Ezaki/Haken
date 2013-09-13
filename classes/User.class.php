@@ -19,7 +19,7 @@ class User{
 	}
 	public function getPostedData(){
 		$this->model->postData = (!empty($_POST))? $_POST : false;
-		$this->model->postData[key($_FILES)] = (!empty($_FILES))? $this->getUploadFile($_FILES) : false;
+		$this->model->postData[key($_FILES)] = (!empty($_FILES["image"]["tmp_name"]))? $this->getUploadFile($_FILES) : false;
 		
 		if(!empty($_GET)){
 			foreach($_GET as $key => $value){
@@ -45,8 +45,8 @@ class User{
 		$new = "";
 		foreach($this->model->init['allowExtensions'] as $k => $v){
 			if(preg_match("/{$v}/",$mimeType)){
-				$ext = $k;
-				$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).$k;
+				$ext = $v;
+				$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".{$v}";
 				return @move_uploaded_file($files["image"]["tmp_name"], $new)?$new:false;
 				break;
 			}

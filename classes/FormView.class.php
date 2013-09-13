@@ -28,10 +28,11 @@ class FormView extends View{
 	}
 
 	private function createPostView(){
-		if(preg_match("/編集/",$this->model->postData['edit'])){
-			echo $this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
-			exit;
-			
+		if(!empty($this->model->postData['edit'])){
+			if(preg_match("/編集/",$this->model->postData['edit'])){
+				echo $this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
+				exit;	
+			}
 		}
 		$result = json_decode($this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].'/responsive/'.POST_EXEC,$this->model->postData),true);
 		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
@@ -130,12 +131,16 @@ class FormView extends View{
 			switch($enq['TYPE']){
 				case 'FILE':
 					$style = $this->createStyle();
-
+					$exts = "";
+					foreach($this->model->init['allowExtensions'] as $ext){
+						$exts.="image/{$ext},";
+					}
+					$exts = rtrim($exts, ",");
 					if(!empty($this->model->postData[$enq['NAME']])){
 						//print $this->model->postData[$enq['NAME']];
-						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" class=\"pure-input-1\" style=\"{$style}\" value=\"{$this->model->postData[$enq['NAME']]}\"></div></div>\n";
+						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" accept=\"{$exts}\" class=\"pure-input-1\" style=\"{$style}\" value=\"{$this->model->postData[$enq['NAME']]}\"></div></div>\n";
 					}else{
-						$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\">\n";
+						$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" accept=\"{$exts}\" style=\"{$style}\">\n";
 					}
 					//$html = str_get_html($tag);
 					//$html->find('input',0)->class = "pure-input-1";
@@ -272,6 +277,8 @@ class FormView extends View{
 		$message = "";
 		if(is_array($enq['ERROR_CHECK']) && !empty($enq['ERROR_CHECK'])){
 			foreach($enq['ERROR_CHECK'] as $k => $v){
+				//文字の差し替え
+				if(preg_match("/%_MAX_%/", $this->model->errorMessage[$k])) $this->model->errorMessage[$k] = preg_replace("/%_MAX_%/", UPLOAD_MAXSIZE, $this->model->errorMessage[$k]);
 				if(!empty($this->model->errorMessage[$k]) && $v == 1) $message .= $this->model->errorMessage[$k];
 			}
 			return $message;

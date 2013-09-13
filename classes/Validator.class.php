@@ -45,6 +45,7 @@ class Validator{
 		return $result;
 	}
 	private function isntFILESIZE($value = ''){
+		$m = filesize($value)/1024/1024;
 		return (filesize($value)/1024/1024 < UPLOAD_MAXSIZE)?0:1;
 	}
 	private function isntTEL($value = ''){
