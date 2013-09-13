@@ -1,5 +1,6 @@
 {
     "templateDir": "templateDir/",
+    "allowExtensions": "jpg,jpeg,png",
     "enqueteList": [
         {
             "NAME": "image",
@@ -7,6 +8,7 @@
             "TYPE": "FILE",
             "ERROR_CHECK": {
                 "REQUIRE": 0,
+                "FILETYPE": 0,
                 "FILESIZE": 0
             },
             "PROPS": {}
@@ -28,128 +30,29 @@
             }
         },
         {
+            "NAME": "enquete2",
+            "TITLE": "名前",
+            "TYPE": "TEXT",
+            "ERROR_CHECK": {
+                    "REQUIRE":0
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 30,
+                "class": "textForm"
+            }
+        },
+        {
             "NAME": "enquete3",
-            "TITLE": "セレクトメニュー",
-            "TYPE": "SELECT",
-            "ERROR_CHECK": {
-                "REQUIRE": 0
-            },
-            "PROPS": {
-                "label": [
-                    "選択してください",
-                    "ラベル1",
-                    "ラベル2",
-                    "ラベル3"
-                ],
-                "value": [
-                    "",
-                    1,
-                    2,
-                    3
-                ]
-            }
-        },
-        {
-            "NAME": "enquete4",
-            "TITLE": "テキスト1",
+            "TITLE": "コメント",
             "TYPE": "TEXT",
-            "ERROR_CHECK": {},
-            "PROPS": {
-                "size": 32,
-                "maxlength": 30,
-                "class": "textForm"
-            }
-        },
-        {
-            "NAME": "enquete5",
-            "TITLE": "セレクト2",
-            "TYPE": "SELECT",
             "ERROR_CHECK": {
-                "REQUIRE": 0
-            },
-            "PROPS": {
-                "label": [
-                    "選択してください",
-                    "ラベル1",
-                    "ラベル2",
-                    "ラベル3"
-                ],
-                "value": [
-                    "",
-                    1,
-                    2,
-                    3
-                ]
-            }
-        },
-        {
-            "NAME": "enquete6",
-            "TITLE": "テキスト2",
-            "TYPE": "TEXT",
-            "ERROR_CHECK": {},
+                    "REQUIRE":0
+                },
             "PROPS": {
                 "size": 32,
                 "maxlength": 30,
                 "class": "textForm"
-            }
-        },
-        {
-            "NAME": "enquete7",
-            "TITLE": "テキスト3",
-            "TYPE": "TEXT",
-            "ERROR_CHECK": {},
-            "PROPS": {
-                "size": 32,
-                "maxlength": 30,
-                "class": "textForm"
-            }
-        },
-        {
-            "NAME": "enquete8",
-            "TITLE": "テキスト4",
-            "TYPE": "TEXTAREA",
-            "ERROR_CHECK": {},
-            "PROPS": {
-                "size": 32,
-                "maxlength": 30,
-                "class": "textForm"
-            }
-        },
-        {
-            "NAME": "enquete9",
-            "TITLE": "らじお",
-            "TYPE": "RADIO",
-            "ERROR_CHECK": {
-                "REQUIRE": 0
-            },
-            "PROPS": {
-                "label": [
-                    "ラベル1",
-                    "ラベル2"
-                ],
-                "value": [
-                    1,
-                    2
-                ]
-            }
-        },
-        {
-            "NAME": "enquete10",
-            "TITLE": "チェック",
-            "TYPE": "CHECKBOX",
-            "ERROR_CHECK": {
-            },
-            "PROPS": {
-                "label": [
-                    "ラベル1",
-                    "ラベル2",
-                    "ラベル3"
-                ],
-                "value": [
-                    1,
-                    2,
-                    3
-                ]
             }
         },
         {

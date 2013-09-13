@@ -28,9 +28,13 @@ class FormView extends View{
 	}
 
 	private function createPostView(){
-		//
-		//
-		//
+		if(preg_match("/編集/",$this->model->postData['edit'])){
+			echo $this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
+			exit;
+			
+		}
+		$result = json_decode($this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].'/responsive/'.POST_EXEC,$this->model->postData),true);
+		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
 		$this->publish();
 		if(!empty($html)){
 			$html->clear();
@@ -41,8 +45,8 @@ class FormView extends View{
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			foreach($enq['ERROR_CHECK'] as $error => $value){
 				if($value != 0){
-					$this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
-						exit;
+					echo $this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
+					exit;
 				}
 			}
 
@@ -52,7 +56,7 @@ class FormView extends View{
 			$value = (!empty($this->model->postData[$enq['NAME']]))?$this->model->postData[$enq['NAME']]:'';
 			switch($enq['TYPE']){
 				case 'FILE':
-					$tag = "<img src=\"{$this->model->postData[$enq['NAME']]}\">";
+					$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img class=\"pure-u\" src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\"></div></div>";
 					break;
 				case 'CHECKBOX':
 					if(!empty($this->model->postData[$enq['NAME']])){
@@ -62,7 +66,7 @@ class FormView extends View{
 						$label = rtrim($label, ",");
 					}
 					
-					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 				case 'SELECT':
 				case 'RADIO':
@@ -73,7 +77,7 @@ class FormView extends View{
 					break;
 				default:
 					$value = $this->model->postData[$enq['NAME']];
-					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$value}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$value}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 			}
 
@@ -115,7 +119,7 @@ class FormView extends View{
 		}
 		$content = file_get_contents($url, false, stream_context_create($options));
 	
-		echo $content;
+		return $content;
 	}
 
 	private function createFormView(){
@@ -126,11 +130,17 @@ class FormView extends View{
 			switch($enq['TYPE']){
 				case 'FILE':
 					$style = $this->createStyle();
+
 					if(!empty($this->model->postData[$enq['NAME']])){
-						$tag = "<img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$this->model->postData[$enq['NAME']]}\">\n";
+						//print $this->model->postData[$enq['NAME']];
+						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" class=\"pure-input-1\" style=\"{$style}\" value=\"{$this->model->postData[$enq['NAME']]}\"></div></div>\n";
 					}else{
 						$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\">\n";
 					}
+					//$html = str_get_html($tag);
+					//$html->find('input',0)->class = "pure-input-1";
+					//$tag = $html->find('input',0);
+
 					break;
 				case 'TEXT':
 					//HTMLを生成
@@ -141,6 +151,7 @@ class FormView extends View{
 					//入力済み項目を反映させる
 					$html = str_get_html($tag);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
+					$html->find('input',0)->class = "pure-input-1";
 					$tag = $html->find('input',0);
 					break;
 				case 'TEXTAREA':
@@ -152,6 +163,7 @@ class FormView extends View{
 					//入力済み項目を反映させる
 					$html = str_get_html($tag);
 					$html->find('textarea',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
+					$html->find('textarea',0)->class = "pure-input-1";
 					$tag = $html->find('textarea',0);
 					break;
 				case 'SELECT':
@@ -221,7 +233,7 @@ class FormView extends View{
 				case 'AGREE':
 					//HTMLを生成
 					$style = $this->createStyle();
-					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"1\">";
+					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"1\"> ";
 
 					//入力済み項目を反映させる
 					$html = str_get_html($tag);
@@ -231,7 +243,7 @@ class FormView extends View{
 						if($this->model->getPostedValueFromKey($enq['NAME']) == $enq['PROPS']['value'][$k]){
 							$el->checked = true;
 						}
-						$tag .= "<label>".$el."{$enq['PROPS']['label'][$k]}</label>\n";
+						$tag .= " <label> ".$el."{$enq['PROPS']['label'][$k]}</label>\n";
 						$k++;
 					}
 					break;
@@ -248,13 +260,13 @@ class FormView extends View{
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
 			$em = ($this->model->postData['page'] != 'input')?$this->getErrorMessage($enq):'';
-			$el->innertext = "{$em}<span class=\"itemTitle\">{$enq['TITLE']}</span>".$tag;
+			$el->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span> ".$tag."<span class=\"itemError\">{$em}</span>";
 		}
 		$this->publish();
 		if(!empty($html)){
 			$html->clear();
 		}
-	}
+	}																																																								
 	//エラーメッセージを取得(つくりかけ)
 	private function getErrorMessage($enq){
 		$message = "";
@@ -271,8 +283,27 @@ class FormView extends View{
 	}
 
 	private function publish() {
+		//viewportを設定
+		$vp = "";
+		switch($this->model->userInfo['DEVICE']){
+			case "featurephone":
+				$vp = "width=device-width,initial-scale=1,user-scalable=no";
+				break;
+			case "smartphone":
+				$vp = "width=device-width,initial-scale=1,user-scalable=no";
+				break;
+			case "tablet":
+				$vp = "width=device-width,initial-scale=1,user-scalable=no";
+				break;
+			default :
+				$vp = "";
+				break;
+		}
+		$this->templateHtml->find("meta[name=viewport]",0)->content = $vp;
+
+		//CSSをロード(現時点では共通)
 		$el = $this->templateHtml->find("head",0);
-		$el->innertext = "<link rel=¥"stylesheet¥" href=¥"css/{$this->model->userInfo['DEVICE']}.css¥">";
+		$el->innertext = $el->innertext.'<link rel="stylesheet" href="css/pure-min.css">';
 
 		echo $this->templateHtml;
 		$this->templateHtml->clear();

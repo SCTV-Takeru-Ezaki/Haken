@@ -8,11 +8,12 @@ class Model{
 	var $postData;
 
 	public function __construct(){
-		
+
 	}
 
 	public function setInit($json){
 		$this->init = $json;
+		$this->init['allowExtensions'] = explode(",",$this->init['allowExtensions']);
 	}
 	public function setErrorMessage($json){
 		$this->errorMessage = $json;

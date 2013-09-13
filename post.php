@@ -32,11 +32,11 @@ define("REALTIME_FLAG", 0);
 
 $mailflg = 1;
 
-$path_to_json = "init/init.json";
+$path_to_json = "/home/".$clientId."/public_html/responsive/init/init.json";
 //---------------------------------------------------
 
 // POSTの値を取得
-$im = $_POST["im"]; // 画像名
+$im = $_POST["image"]; // 画像名
 $title = $_POST["enquete2"];//ニックネーム
 $body = $_POST["enquete3"];
 
@@ -100,12 +100,35 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = "/home/".$clientId."/public_html/ajaxform/uploads/".$im;
+$testPath = "/home/".$clientId."/public_html/responsive/".$echo;
+//im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
 copy($testPath, $toPath);
 chmod($toPath, 0666);
 
 $toPath = RESIZE_DIR_PATH."/{$fileName}";
+/*
+$im = new Imagick();
+$im->readImage($testPath);
+$geo = $im->getImageGeometry(); //幅と高さを取得
+$sizeX = $geo['width'];
+$sizeY = $geo['height'];
+if($sizeX >= $sizeY){
+	$lenX = 0;
+	$lenY = IMG_HEIGHT;
+}
+else{
+	$lenX = IMG_WIDTH;
+	$lenY = 0;
+}
+
+$im->resizeImage($lenX, $lenY, Imagick::FILTER_LANCZOS, 1); // リサイズ
+$im->writeImage($toPath);
+$im->clear();
+$im->destroy();
+chmod($toPath, 0666);
+*/
+
 
 $bool = $imPost->execImageRegist($fileName, $toPath);
 if(!$bool){

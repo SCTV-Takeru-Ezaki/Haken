@@ -20,7 +20,7 @@ class User{
 	public function getPostedData(){
 		$this->model->postData = (!empty($_POST))? $_POST : false;
 		$this->model->postData[key($_FILES)] = (!empty($_FILES))? $this->getUploadFile($_FILES) : false;
-		//print_r($this->model->postData);
+		
 		if(!empty($_GET)){
 			foreach($_GET as $key => $value){
 				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
@@ -31,16 +31,26 @@ class User{
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
-				$checker = new Validator($key,$value);
+				$checker = new Validator($key,$value,$this->model);
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
 			}
 		}
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function getUploadFile($files){
-		$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".jpg";
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		$mimeType = finfo_file($finfo, $files["image"]["tmp_name"]);
+		finfo_close($finfo);
 
-		return @move_uploaded_file($files["image"]["tmp_name"], $new)?$new:false;
+		$new = "";
+		foreach($this->model->init['allowExtensions'] as $k => $v){
+			if(preg_match("/{$v}/",$mimeType)){
+				$ext = $k;
+				$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).$k;
+				return @move_uploaded_file($files["image"]["tmp_name"], $new)?$new:false;
+				break;
+			}
+		}
 	}
 	private function getDevice(){
 		if(preg_match('/android/i',$this->userAgent) && preg_match('/mobile/i',$this->userAgent) || preg_match('/iphone/i',$this->userAgent) || preg_match('/windows phone/i',$this->userAgent)){
