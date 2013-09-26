@@ -8,7 +8,7 @@ class Model{
 	var $postData;
 
 	public function __construct(){
-
+		//
 	}
 
 	public function setInit($json){
@@ -33,6 +33,11 @@ class Model{
 				return $v['PROPS']['label'][$key];
 			}
 		}		
+	}
+	public function getValue($array,$key){
+		if(!empty($array[$key])){
+			return $array[$key];
+		}
 	}
 	/* checker */
 	public function isPostedDataFromKey($key){
