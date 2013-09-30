@@ -41,6 +41,14 @@ class User{
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function getUploadFile($files){
+		//
+		if(!is_dir(UPLOAD_DIR)){
+			mkdir(UPLOAD_DIR,0707);
+		}
+		if(substr(sprintf('%o', fileperms(UPLOAD_DIR)), -4) != "0707"){
+			chmod(UPLOAD_DIR,0707);
+		}
+		
 		//画像削除だった場合
 		if(preg_match("/削除/",$this->model->getValue($this->model->postData,'CMD'))){
 			return false;

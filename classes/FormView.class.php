@@ -12,7 +12,6 @@ class FormView extends View{
 	private function loadTemplate(){
 		$this->templateHtml = file_get_html($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
 	}
-
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){
 			case "input":
@@ -25,18 +24,18 @@ class FormView extends View{
 				$this->createPostView();
 				break;
 			default:
-				header('Location: ./?page=input');
+				header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
 				break;
 		}
 	}
 	private function createPostView(){
 		if(!empty($this->model->postData['edit'])){
 			if(preg_match("/編集/",$this->model->postData['edit'])){
-				echo $this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
+				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
 				exit;	
 			}
 		}
-		$result = json_decode($this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].'/responsive/'.POST_EXEC,$this->model->postData),true);
+		$result = json_decode($this->sendPostQuery("HTTP_SCRIPT_DIR".POST_EXEC,$this->model->postData),true);
 		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
 		$this->publish();
 		if(!empty($html)){
@@ -50,7 +49,7 @@ class FormView extends View{
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			foreach($enq['ERROR_CHECK'] as $error => $value){
 				if($value != 0 || $this->model->getValue($_POST,'CMD') == 'IMGDELETE'){
-					echo $this->sendPostQuery("http://".$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
+					echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
 					exit;
 				}
 			}
@@ -105,6 +104,7 @@ class FormView extends View{
 		$data = http_build_query($params);
 
 		$header = Array(	"Content-Type: application/x-www-form-urlencoded",
+							"Referer: ".$_SERVER['HTTP_REFERER'],
 							"User-Agent: ".$this->model->userInfo['UA']
 			);
 		$options = array('http' => Array(
@@ -293,7 +293,7 @@ class FormView extends View{
 
 	private function checkWrongAccess(){
 		//print_r($this->model->postData);
-		if(empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: ./?page=input');
+		if(empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
 	}
 
 	private function publish() {
