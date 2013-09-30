@@ -12,9 +12,8 @@ define("UPLOAD_MAXSIZE",3);
 define("INIT_FILE","init/init.json");
 define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
-define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http//:'));
+define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http://'));
 define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']));
-//print_r($_SERVER);
 
 //モデルを構築し
 $model = new Model();
@@ -28,7 +27,7 @@ $model->setErrorMessage($errorMessage->getJsonData());
 
 //ユーザー情報をModelへadd
 $user = new User($model);
-　　　　　
+
 //インターフェース構築
 $view = new FormView($model);
 $view->display();
