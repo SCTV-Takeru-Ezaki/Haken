@@ -1,6 +1,6 @@
 <?php
-error_reporting(E_ALL);
-ini_set( 'display_errors', 1 );
+ini_set('display_errors',1);
+ini_set('error_reporting', E_ALL);
 // 投稿登録
 // カレントの言語を設定する
 mb_language("uni");
@@ -32,7 +32,7 @@ define("REALTIME_FLAG", 0);
 
 $mailflg = 1;
 
-$path_to_json = "/home/".$clientId."/public_html/responsive/init/init.json";
+$path_to_json = "/home/".$clientId."/public_html/haken/init/init.json";
 //---------------------------------------------------
 
 // POSTの値を取得
@@ -100,35 +100,14 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = "/home/".$clientId."/public_html/responsive/".$echo;
+$testPath = "/home/".$clientId."/public_html/haken/".$im;
+
 //im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
 copy($testPath, $toPath);
 chmod($toPath, 0666);
 
 $toPath = RESIZE_DIR_PATH."/{$fileName}";
-/*
-$im = new Imagick();
-$im->readImage($testPath);
-$geo = $im->getImageGeometry(); //幅と高さを取得
-$sizeX = $geo['width'];
-$sizeY = $geo['height'];
-if($sizeX >= $sizeY){
-	$lenX = 0;
-	$lenY = IMG_HEIGHT;
-}
-else{
-	$lenX = IMG_WIDTH;
-	$lenY = 0;
-}
-
-$im->resizeImage($lenX, $lenY, Imagick::FILTER_LANCZOS, 1); // リサイズ
-$im->writeImage($toPath);
-$im->clear();
-$im->destroy();
-chmod($toPath, 0666);
-*/
-
 
 $bool = $imPost->execImageRegist($fileName, $toPath);
 if(!$bool){
@@ -174,7 +153,6 @@ foreach($jsondata as $k=>$v){
 	if($enq_num){
 		$imPost->setOptData($db, $arrData);
 	}
-	//$result .="{$enq_text_key}=>{$_POST[$enq_text_key]}<br />\n";
 }
 
 //事後チェック２
@@ -198,11 +176,6 @@ $db->commit();
 
 $returnId = "0{$mid}";
 
-
-
-
-//$ian = new PPM_ImageAnnotate;
-//$url = $ian->setAnnotate($mid, $title, 8);
 $url = "";
 $retData = array("id" =>$returnId ,"url" => $url);
 $retJson = json_encode($retData);

@@ -18,17 +18,17 @@ define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQU
 //モデルを構築し
 $model = new Model();
 
-//設定情報とエラメをロード。設定情報とエラメ情報をadd
+//設定情報とエラメをロード。設定情報とエラメ情報をセット
 $init = new JSONLoader(INIT_FILE);
 $model->setInit($init->getJsonData());
 
 $errorMessage = new JSONLoader(ERROR_MESSAGE_FILE);
 $model->setErrorMessage($errorMessage->getJsonData());
 
-//ユーザー情報をModelへadd
+//ユーザー情報をModelへセット
 $user = new User($model);
 
-//インターフェース構築
+//インターフェース構築＆表示
 $view = new FormView($model);
 $view->display();
 exit;

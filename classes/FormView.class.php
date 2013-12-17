@@ -35,7 +35,7 @@ class FormView extends View{
 				exit;	
 			}
 		}
-		$result = json_decode($this->sendPostQuery("HTTP_SCRIPT_DIR".POST_EXEC,$this->model->postData),true);
+		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
 		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
 		$this->publish();
 		if(!empty($html)){
@@ -124,7 +124,7 @@ class FormView extends View{
 			$options['http']['content'] = $data;
 		}
 		$content = file_get_contents($url, false, stream_context_create($options));
-	
+		
 		return $content;
 	}
 
@@ -318,6 +318,8 @@ class FormView extends View{
 		//CSSをロード(現時点では共通)
 		$el = $this->templateHtml->find("head",0);
 		$el->innertext = $el->innertext.'<link rel="stylesheet" href="css/pure-min.css">';
+
+		//ヘッダー出力 au対策
 		header("Content-Type: text/html; charset=utf-8");
 		echo $this->templateHtml;
 		$this->templateHtml->clear();
