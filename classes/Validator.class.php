@@ -11,12 +11,10 @@ class Validator{
 
 		$this->model = $model;
 	}
-
 	public function getResult(){
 		$method = 'isnt'.$this->method;
 		return $this->$method($this->value);
 	}
-
 	private function isntREQUIRE($value = ''){
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);

@@ -10,7 +10,6 @@ class Model{
 	public function __construct(){
 		//
 	}
-
 	public function setInit($json){
 		$this->init = $json;
 		$this->init['allowExtensions'] = explode(",",$this->init['allowExtensions']);
@@ -50,7 +49,3 @@ class Model{
 		return false;
 	}
 }
-
-
-
-
