@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors',1);
-ini_set('error_reporting', E_ALL);
+error_reporting(E_ALL);
+ini_set( 'display_errors', 1 );
 // 投稿登録
 // カレントの言語を設定する
 mb_language("uni");
@@ -32,11 +32,11 @@ define("REALTIME_FLAG", 0);
 
 $mailflg = 1;
 
-$path_to_json = "/home/".$clientId."/public_html/haken/init/init.json";
+$path_to_json = "init/init.json";
 //---------------------------------------------------
 
 // POSTの値を取得
-$im = $_POST["image"]; // 画像名
+$im = $_POST["im"]; // 画像名
 $title = $_POST["enquete2"];//ニックネーム
 $body = $_POST["enquete3"];
 
@@ -100,9 +100,7 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = "/home/".$clientId."/public_html/haken/".$im;
-
-//im $testPath;
+$testPath = "/home/".$clientId."/public_html/ajaxform/uploads/".$im;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
 copy($testPath, $toPath);
 chmod($toPath, 0666);
@@ -153,6 +151,7 @@ foreach($jsondata as $k=>$v){
 	if($enq_num){
 		$imPost->setOptData($db, $arrData);
 	}
+	//$result .="{$enq_text_key}=>{$_POST[$enq_text_key]}<br />\n";
 }
 
 //事後チェック２
@@ -176,6 +175,15 @@ $db->commit();
 
 $returnId = "0{$mid}";
 
+
+
+
+//$ian = new PPM_ImageAnnotate;
+//$url = $ian->setAnnotate($mid, $title, 8);
+$url = "";
+$retData = array("id" =>$returnId ,"url" => $url);
+$retJson = json_encode($retData);
+
 // メール送信
 if($mailflg){
 $ms->execAutoResponse($returnId, "", "", $EMAIL);
@@ -183,58 +191,4 @@ $datetime = date("Y-m-d H:i:s");
 $ms->logs("send mail $returnId $co $datetime");
 }
 
-//各SNSのタイムラインへ投稿
-switch($_POST['snsName']){
-	case 'facebook':
-		$url="https://lunch.pitcom.jp/haken/facebook.php";
-		$params = Array(
-			'mode'  => 'post',
-			'snsUid'  => $_POST['snsUid'],
-			'tokenSecret'  => $_POST['tokenSecret']
-		);
-		sendPostQuery($url,$params);
-		break;
-
-	case 'twitter':
-		$url="https://lunch.pitcom.jp/haken/tw_callback.php";
-		$params = Array(
-			'mode'  => 'post',
-			'snsUid'  => $_POST['snsUid'],
-			'tokenSecret'  => $_POST['tokenSecret'],
-			'id' => $returnId
-		);
-		sendPostQuery($url,$params);		
-		break;
-	default:
-		//通常投稿は何もしない
-		break;
-}
-
-$retData = array("id" =>$returnId);
-$retJson = json_encode($retData);
 echo $retJson;
-
-//FormViewクラスの関数(簡易版)
-function sendPostQuery($url,$params = array()){
-	$method = 'POST';
-	$data = http_build_query($params);
-
-	$options = array('http' => Array(
-		'method' => $method,
-	));
-
-	// ステータスをチェック / PHP5専用 get_headers()
-	$respons = get_headers($url);
-	if(preg_match("/(404|403|500)/",$respons['0'])){
-		return false;
-		exit;
-	}
-
-	if($method == 'GET') {
-		$url = ($data != '') ? $url.'?'.$data:$url;
-	}else if($method == 'POST') {
-		$options['http']['content'] = $data;
-	}
-	$content = file_get_contents($url, false, stream_context_create($options));
-	return $content;
-}

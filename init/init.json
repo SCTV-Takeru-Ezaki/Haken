@@ -56,12 +56,33 @@
             }
         },
         {
-            "NAME": "SNS",
+            "NAME": "enquete10",
             "TITLE": "",
             "TYPE": "HIDDEN",
             "ERROR_CHECK": {},
-            "PROPS": {}
-        }
+            "PROPS": {"label": [""],"value": [""]}
+        },        
+        {
+            "NAME": "snsName",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {"label": [""],"value": [""]}
+        },
+        {
+            "NAME": "snsUid",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {"label": [""],"value": [""]}
+        },
+        {
+            "NAME": "tokenSecret",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {"label": [""],"value": [""]}
+        }        
 
     ]
 }
