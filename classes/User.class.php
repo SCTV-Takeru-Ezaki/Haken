@@ -10,10 +10,10 @@ class User{
 		$this->model = $model;
 		
 		$this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-
+		
 		$this->getStatus();
 		$this->getDevice();
-
+		
 		$this->setUserInfo();
 		$this->getPostedData();
 	}
@@ -26,10 +26,9 @@ class User{
 				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
 			}
 		}
-
 		//ステータスにあわせた」画像データを格納
 		$this->model->postData['image'] = $this->getUploadFile($_FILES);
-
+		
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
@@ -41,7 +40,6 @@ class User{
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function getUploadFile($files){
-		//
 		if(!is_dir(UPLOAD_DIR)){
 			mkdir(UPLOAD_DIR,0707);
 		}
@@ -54,7 +52,7 @@ class User{
 			return false;
 		}
 		//SNSプラグインから画像を渡された場合
-		if(!empty($_GET['image'])) return $_GET['image'];
+		if(!empty($_GET['image'])) return base64_decode($_GET['image']);
 		//編集モードだった場合
 		if(!empty($_POST['image']) && empty($files["image"]["tmp_name"])) return $_POST['image'];
 		//通常投稿(確認画面)
@@ -64,6 +62,7 @@ class User{
 			finfo_close($finfo);
 
 			$new = "";
+
 			foreach($this->model->init['allowExtensions'] as $k => $v){
 				if(preg_match("/{$v}/",$mimeType)){
 					$ext = $v;

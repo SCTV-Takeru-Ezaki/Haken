@@ -292,7 +292,6 @@ class FormView extends View{
 	}
 
 	private function checkWrongAccess(){
-		//print_r($this->model->postData);
 		if(empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
 	}
 
