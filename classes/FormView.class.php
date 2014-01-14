@@ -141,8 +141,11 @@ class FormView extends View{
 						$exts.="image/{$ext},";
 					}
 					$exts = rtrim($exts, ",");
-					if(!empty($this->model->postData[$enq['NAME']])){
-						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"submit\" name=\"CMD\" value=\"画像を削除\"></div></div>\n";
+
+					$deleteButton = (empty($this->model->postData['snsName']))? '<input type="submit" name="CMD" value="画像を削除">' : '';
+
+					if(!empty($this->model->postData[$enq['NAME']]) ){
+						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">{$deleteButton}</div></div>\n";
 					}else{
 						$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" accept=\"{$exts}\" style=\"{$style}\">\n";
 					}
@@ -178,7 +181,7 @@ class FormView extends View{
 						$style = $this->createStyle();
 						$tag .= "<option value=\"{$enq['PROPS']['value'][$k]}\">{$v}</option>\n";
 					}
-
+					
 					//入力済み項目を反映させる
 					$html = str_get_html($tag);
 					$tag="";
