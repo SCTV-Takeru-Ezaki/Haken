@@ -69,7 +69,6 @@ class FormView extends View{
 						}
 						$label = rtrim($label, ",");
 					}
-					
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 				case 'SELECT':
@@ -132,7 +131,7 @@ class FormView extends View{
 		//HTMLをいっかい生成してから選択済みをチェックしてまた再生成する
 		//非効率な気がしないでもない。
 		foreach($this->model->init['enqueteList'] as $enq){
-			$tag ="";
+			$tag = "";
 			switch($enq['TYPE']){
 				case 'FILE':
 					$style = $this->createStyle();
@@ -303,6 +302,7 @@ class FormView extends View{
 		$vp = "";
 		switch($this->model->userInfo['DEVICE']){
 			case "featurephone":
+				$this->templateHtml->find('html',0)->outertext = '<?xml version="1.0" encoding="utf-8"?>'.$this->templateHtml->find('html',0)->outertext;
 				$vp = "width=device-width,initial-scale=1,user-scalable=no";
 				break;
 			case "smartphone":
@@ -312,6 +312,7 @@ class FormView extends View{
 				$vp = "width=device-width,initial-scale=1,user-scalable=no";
 				break;
 			default :
+				$this->templateHtml->find('html',0)->outertext = '<?xml version="1.0" encoding="utf-8"?>'.$this->templateHtml->find('html',0)->outertext;
 				$vp = "";
 				break;
 		}
