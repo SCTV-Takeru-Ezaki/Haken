@@ -40,7 +40,7 @@ class User{
 		}
 		//ステータスにあわせた」画像データを格納
 		$this->model->postData['image'] = $this->setUploadFile($_FILES);
-		
+		$this->model->postData['image'] = ($this->model->postData && Utility::isUrlEncoded($this->model->postData['image']))? Utility::urldecode_array($this->model->postData['image']) : $this->model->postData['image'];
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
