@@ -302,7 +302,9 @@ class FormView extends View{
 		$vp = "";
 		switch($this->model->userInfo['DEVICE']){
 			case "featurephone":
+				/*
 				$this->templateHtml->find('html',0)->outertext = '<?xml version="1.0" encoding="utf-8"?>'.$this->templateHtml->find('html',0)->outertext;
+				*/
 				$vp = "width=device-width,initial-scale=1,user-scalable=no";
 				break;
 			case "smartphone":
@@ -319,12 +321,20 @@ class FormView extends View{
 		$this->templateHtml->find("meta[name=viewport]",0)->content = $vp;
 
 		//CSSをロード(現時点では共通)
-		$el = $this->templateHtml->find("head",0);
-		$el->innertext = $el->innertext.'<link rel="stylesheet" href="css/pure-min.css">';
+		$this->templateHtml = str_get_html($this->templateHtml);
 
-		//ヘッダー出力 au対策
-		header("Content-Type: text/html; charset=utf-8");
-		echo $this->templateHtml;
+		if(Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE'])){
+			//$this->templateHtml->find('meta[http-equiv*=Content-type]',0)->content = 'text/html; charset=shift_jis';
+			$this->templateHtml->find('head',0)->innertext = $this->templateHtml->find('head',0)->innertext.'<meta http-equiv="Content-Type" content="text/html; charset=shift_jis" />';
+			//ヘッダー出力 au対策
+			header("Content-Type: text/html; charset=shift_jis");
+			echo mb_convert_encoding($this->templateHtml, "SJIS", "UTF-8");
+		}else{
+			$this->templateHtml->find('head',0)->innertext = $this->templateHtml->find('head',0)->innertext.'<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
+			header("Content-Type: text/html; charset=utf-8");
+			echo $this->templateHtml;
+		}
+		
 		$this->templateHtml->clear();
 	}
 

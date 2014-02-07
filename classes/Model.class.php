@@ -8,7 +8,7 @@ class Model{
 	var $postData;
 
 	public function __construct(){
-		//
+		
 	}
 	public function setInit($json){
 		$this->init = $json;

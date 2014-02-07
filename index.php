@@ -1,6 +1,8 @@
 <?php
 ini_set('display_errors',1);
 ini_set('error_reporting', E_ALL);
+mb_language("uni");
+mb_internal_encoding("UTF-8");
 
 //オートロードを有効に
 require_once 'lib/autoload.php';

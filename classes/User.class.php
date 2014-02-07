@@ -1,7 +1,8 @@
 <?php
 class User{
 	var $model;
-	var $device; 
+	var $device;
+	var $carrier;
 	var $status;
 	
 	protected $userAgent;
@@ -11,23 +12,34 @@ class User{
 		
 		$this->userAgent = $_SERVER['HTTP_USER_AGENT'];
 		
-		$this->getStatus();
-		$this->getDevice();
-		
 		$this->setUserInfo();
-		$this->getPostedData();
+		$this->initEncoding();
+		$this->setPostedData();
 	}
-	public function getPostedData(){
+	private function initEncoding(){
+		if($this->model->userInfo['CARRIER'] == 'kddi' && $this->model->userInfo['DEVICE'] == 'featurephone'){
+			ini_set('mbstring.encoding_translation', 0);
+			ini_set('mbstring.http_output', 'pass');
+			ini_set('mbstring.http_input', 'pass');
+		}
+	}
+	public function setPostedData(){
 		//同じくPOSTデータも
 		$this->model->postData = (!empty($_POST))? $_POST : false;
+		//auフィーチャーフォン対策
+		$this->model->postData = ($this->model->postData && Utility::isUrlEncoded($this->model->postData))? Utility::urldecode_array($this->model->postData) : $this->model->postData;
+
+		//SJISのみの環境であれば内部エンコーディングに変換
+		$this->model->postData = ($this->model->postData && Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']))? Utility::convertencoding_array($this->model->postData) : $this->model->postData;
 		//GETデータを一旦格納
 		if(!empty($_GET)){
-			foreach($_GET as $key => $value){
+			$get = (Utility::isUrlEncoded($this->model->postData))? Utility::urldecode_array($_GET) : $_GET;
+			foreach($get as $key => $value){
 				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
 			}
 		}
 		//ステータスにあわせた」画像データを格納
-		$this->model->postData['image'] = $this->getUploadFile($_FILES);
+		$this->model->postData['image'] = $this->setUploadFile($_FILES);
 		
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
@@ -39,7 +51,7 @@ class User{
 		}
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
-	private function getUploadFile($files){
+	private function setUploadFile($files){
 		if(!is_dir(UPLOAD_DIR)){
 			mkdir(UPLOAD_DIR,0707);
 		}
@@ -77,25 +89,41 @@ class User{
 	}
 	private function getDevice(){
 		if(preg_match('/android/i',$this->userAgent) && preg_match('/mobile/i',$this->userAgent) || preg_match('/iphone/i',$this->userAgent) || preg_match('/windows phone/i',$this->userAgent)){
-			$this->device = 'smartphone';
+			return 'smartphone';
 		}elseif(preg_match('/android/i',$this->userAgent) || preg_match('/ipad/i',$this->userAgent)){
-			$this->device = 'tablet';
-		}elseif(preg_match('/docomo/i',$this->userAgent) || preg_match('/kddi/i',$this->userAgent) || preg_match('/softbank/i',$this->userAgent) || preg_match('/vodafone/i',$this->userAgent) || preg_match('/j-phone/i',$this->userAgent)){
-			$this->device = 'featurephone';
+			return 'tablet'																									;
+		}elseif($this->isCarrier()){
+			return 'featurephone';
 		}else{
-			$this->device = 'pc';
+			return 'pc';
 		}
 	}
+	private function getCarrier(){
+		if(preg_match('/docomo/i',$this->userAgent)){
+			return 'docomo';
+		}elseif(preg_match('/kddi/i',$this->userAgent)){
+			return 'au';
+		}elseif(preg_match('/softbank/i',$this->userAgent) || preg_match('/vodafone/i',$this->userAgent) || preg_match('/j-phone/i',$this->userAgent)){
+			return 'softbank';
+		}
+	}
+	private function isCarrier(){
+		return ($this->getCarrier() != "")? true : false;
+	}
+	private function isOnlySjisDevice(){
+		return ($this->carrier == 'kddi' && $this->device == 'featurephone')? true : false;
+	}
 	private function getStatus(){
-		$this->status = (!empty($_GET))? $_GET : false;
+		return (!empty($_GET))? $_GET : false;
 	}
 	private function setUserInfo(){
 		$info = array();
 
 		$this->model->userInfo = array(
 					'UA' => $this->userAgent,
-					'DEVICE' => $this->device,
-					'STATUS' => $this->status
+					'DEVICE' => $this->getDevice(),
+					'CARRIER' => $this->getCarrier(),
+					'STATUS' => $this->getStatus()
 		);
 	}
 }
