@@ -15,13 +15,22 @@ class Utility{
 		return ($_carrier == 'au' && $_device == 'featurephone')? true : false;
 	}
 	public static function isUrlEncoded($array){
-		foreach($array as $k=> $v){
-			if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array[$k])){
-				//echo "{$array[$k]}true";
-				return true;
+		//print_r($array);
+		if(!empty($array) && is_array($array)){
+			foreach($array as $k=> $v){
+				if(!empty($array[$k]) && !is_array($array)){
+					if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array[$k])){
+						//echo "{$array[$k]}true";
+						return true;
+					}
+				}
 			}
+		}else if(!empty($array)){
+				if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array)){
+					return true;
+				}
 		}
-				//echo "{$array[$k]}false";
+		//echo "{$array[$k]}======FALSE=====";
 		return false;
 	}
 	public static function urldecode_array($array){
@@ -39,18 +48,29 @@ class Utility{
 	 * @return [array]        [converted array]
 	 */
 	public static function convertencoding_array($array){
-		foreach($array as $k=> $v){
-			$enc=mb_detect_encoding($array[$k]);
-			//echo "ENC:".$enc;
-			if($enc != mb_internal_encoding()){
-				$array[$k]=htmlspecialchars($array[$k]);
-				$array[$k]=mb_convert_encoding($array[$k], mb_internal_encoding(), $enc);
-			}else{
-				$array[$k]=$array[$k];
-				$array[$k]=$array[$k];
+		if(!empty($array) && is_array($array)){
+			foreach($array as $k=> $v){
+				$enc=mb_detect_encoding($array[$k]);
+				//echo "ENC:".$enc;
+				if($enc != mb_internal_encoding()){
+					$array[$k]=htmlspecialchars($array[$k]);
+					$array[$k]=mb_convert_encoding($array[$k], mb_internal_encoding(), $enc);
+				}else{
+					$array[$k]=$array[$k];
+					$array[$k]=$array[$k];
+				}
 			}
+			return $array;
 		}
-		return $array;
 	}
-
+	public static function convertencoding_array2($array){
+		if(!empty($array) && is_array($array)){
+			foreach($array as $k=> $v){
+				$enc=mb_detect_encoding($array[$k]);
+				
+				$array[$k]=urlencode($array[$k]);
+			}
+			return $array;
+		}
+	}
 }

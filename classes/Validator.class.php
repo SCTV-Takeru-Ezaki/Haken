@@ -29,6 +29,7 @@ class Validator{
 		$result = 1;
 		if(!empty($value)){
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			//$value = (Utility::isUrlEncoded($value))? urldecode($value) : $value;
 			$mimeType = finfo_file($finfo, $value);
 			finfo_close($finfo);
 			

@@ -29,13 +29,19 @@ class FormView extends View{
 		}
 	}
 	private function createPostView(){
+		print_r($this->model->postData);
+		$post = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
 		if(!empty($this->model->postData['edit'])){
 			if(preg_match("/編集/",$this->model->postData['edit'])){
-				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
+				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$post);
 				exit;	
 			}
 		}
-		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
+
+		//$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
+		$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
+		echo $result;
+		
 		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
 		$this->publish();
 		if(!empty($html)){
@@ -79,7 +85,7 @@ class FormView extends View{
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 				default:
-					$value = $this->model->postData[$enq['NAME']];
+					//$value = $this->model->postData[$enq['NAME']];
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$value}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 			}

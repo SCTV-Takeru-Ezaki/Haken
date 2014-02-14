@@ -27,20 +27,22 @@ class User{
 		//同じくPOSTデータも
 		$this->model->postData = (!empty($_POST))? $_POST : false;
 		//auフィーチャーフォン対策
-		$this->model->postData = ($this->model->postData && Utility::isUrlEncoded($this->model->postData))? Utility::urldecode_array($this->model->postData) : $this->model->postData;
+		$this->model->postData = (Utility::isUrlEncoded($this->model->postData))? Utility::urldecode_array($this->model->postData) : $this->model->postData;
 
 		//SJISのみの環境であれば内部エンコーディングに変換
-		$this->model->postData = ($this->model->postData && Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']))? Utility::convertencoding_array($this->model->postData) : $this->model->postData;
+		$this->model->postData = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']))? Utility::convertencoding_array($this->model->postData) : $this->model->postData;
 		//GETデータを一旦格納
 		if(!empty($_GET)){
-			$get = (Utility::isUrlEncoded($this->model->postData))? Utility::urldecode_array($_GET) : $_GET;
+			$get = (Utility::isUrlEncoded($_GET))? Utility::urldecode_array($_GET) : $_GET;
 			foreach($get as $key => $value){
 				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
 			}
 		}
 		//ステータスにあわせた」画像データを格納
-		$this->model->postData['image'] = $this->setUploadFile($_FILES);
-		$this->model->postData['image'] = ($this->model->postData && Utility::isUrlEncoded($this->model->postData['image']))? Utility::urldecode_array($this->model->postData['image']) : $this->model->postData['image'];
+		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
+		$this->model->postData['image'] = $this->setUploadFile($files);
+
+		//print_r($this->model->postData);
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
@@ -52,6 +54,8 @@ class User{
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function setUploadFile($files){
+		$post = (Utility::isUrlEncoded($_POST))? Utility::urldecode_array($_POST) : $_POST;
+		$get = (Utility::isUrlEncoded($_GET))? Utility::urldecode_array($_GET) : $_GET;
 		if(!is_dir(UPLOAD_DIR)){
 			mkdir(UPLOAD_DIR,0707);
 		}
@@ -64,11 +68,11 @@ class User{
 			return false;
 		}
 		//SNSプラグインから画像を渡された場合
-		if(!empty($_GET['image'])) return base64_decode($_GET['image']);
+		if(!empty($get['image'])) return base64_decode($get['image']);
 		//編集モードだった場合
-		if(!empty($_POST['image']) && empty($files["image"]["tmp_name"])) return $_POST['image'];
+		if(!empty($post['image']) && empty($files["image"]["tmp_name"])) return $post['image'];
 		//通常投稿(確認画面)
-		if(empty($_POST['image']) && !empty($files["image"]["tmp_name"])){
+		if(empty($post['image']) && !empty($files["image"]["tmp_name"])){
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			$mimeType = finfo_file($finfo, $files["image"]["tmp_name"]);
 			finfo_close($finfo);
@@ -91,7 +95,7 @@ class User{
 		if(preg_match('/android/i',$this->userAgent) && preg_match('/mobile/i',$this->userAgent) || preg_match('/iphone/i',$this->userAgent) || preg_match('/windows phone/i',$this->userAgent)){
 			return 'smartphone';
 		}elseif(preg_match('/android/i',$this->userAgent) || preg_match('/ipad/i',$this->userAgent)){
-			return 'tablet'																									;
+			return 'tablet';
 		}elseif($this->isCarrier()){
 			return 'featurephone';
 		}else{

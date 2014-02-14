@@ -6,7 +6,7 @@ ini_set('error_reporting', E_ALL);
 mb_language("uni");
 // 内部文字エンコードを設定する
 mb_internal_encoding("UTF-8");
-mb_detect_order("ASCII,JIS,EUC-JP,SJIS,UTF-8");
+//mb_detect_order("ASCII,JIS,EUC-JP,SJIS,UTF-8");
 
 require_once("../pitadmin/current.php"); // pitadminディレクトリ直下にあるcurrent.phpを指定
 
@@ -22,7 +22,7 @@ require_once("XML/Unserializer.php");
 
 //画像合成クラス
 //require_once(BASE_URI."/lib/PPM/ImageAnnotate.php");
-
+require_once 'lib/autoload.php';
 
 $clientId = CLIENT_ID;
 
@@ -34,11 +34,32 @@ $mailflg = 1;
 
 $path_to_json = "/home/".$clientId."/public_html/haken/init/init.json";
 //---------------------------------------------------
+define("INIT_FILE","init/init.json");
+define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
+define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http://'));
+define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']));
+
+//モデルを構築し
+$model = new Model();
+
+//設定情報とエラメをロード。設定情報とエラメ情報をセット
+$init = new JSONLoader(INIT_FILE);
+$model->setInit($init->getJsonData());
+
+$errorMessage = new JSONLoader(ERROR_MESSAGE_FILE);
+$model->setErrorMessage($errorMessage->getJsonData());
+
+//ユーザー情報をModelへセット
+$user = new User($model);
 // POSTの値を取得
-$im = $_POST["image"]; // 画像名
-$title = $_POST["enquete2"];//ニックネーム
-$body = $_POST["enquete3"];
+print_r($model->postData);
+$im = $model->postData["image"]; // 画像名
+$title = $model->postData["enquete2"];//ニックネーム
+$body = $model->postData["enquete3"];
+
+//echo mb_convert_encoding($title, "UTF-8");
+//echo mb_convert_encoding($body, "UTF-8");
 
 if(REALTIME_FLAG){
     //$status = IMAGE_PUBLIC;
@@ -66,12 +87,13 @@ $newDb = new DB;
 $db = $newDb->conn();
 $db->beginTransaction();
 
+//print_r($jsondata);
 //emailアドレスを取り出す
-if(!empty($_POST)){
-	foreach($jsondata as $k=>$v){
+if(!empty($model->postData)){
+	foreach($jsondata['enqueteList'] as $k=>$v){
 		if(array_key_exists("EMAIL",$v["ERROR_CHECK"])){
 			$key = $v["NAME"];
-			$EMAIL = $_POST[$key];
+			$EMAIL = $model->postData[$key];
 		}
 	}
 }else{
@@ -140,7 +162,7 @@ $imPost->setTblData($db, $arrPostData);
 // 最初に管理画面のオプションのアンケート追加にて項目を追加。
 // そこで追加した項目の数字がenq_numの値となる。
 
-foreach($jsondata as $k=>$v){
+foreach($jsondata['enqueteList'] as $k=>$v){
 	$enq_num = mb_ereg_replace('[^0-9]', '', $v["NAME"]);
 	$enq_text_key = $v["NAME"];
 	
@@ -148,7 +170,7 @@ foreach($jsondata as $k=>$v){
 		"client_id" => CLIENT_ID,
 		"data_id" => $mid,
 		"enq_num" => $enq_num,
-		"enq_text" => $_POST[$enq_text_key]
+		"enq_text" => $model->postData[$enq_text_key]
 	);
 	if($enq_num){
 		$imPost->setOptData($db, $arrData);
@@ -184,13 +206,13 @@ $ms->logs("send mail $returnId $co $datetime");
 }
 
 //各SNSのタイムラインへ投稿
-switch($_POST['snsName']){
+switch($model->postData['snsName']){
 	case 'facebook':
 		$url="https://lunch.pitcom.jp/haken/facebook.php";
 		$params = Array(
 			'mode'  => 'post',
-			'snsUid'  => $_POST['snsUid'],
-			'tokenSecret'  => $_POST['tokenSecret']
+			'snsUid'  => $model->postData['snsUid'],
+			'tokenSecret'  => $model->postData['tokenSecret']
 		);
 		sendPostQuery($url,$params);
 		break;
@@ -199,8 +221,8 @@ switch($_POST['snsName']){
 		$url="https://lunch.pitcom.jp/haken/tw_callback.php";
 		$params = Array(
 			'mode'  => 'post',
-			'snsUid'  => $_POST['snsUid'],
-			'tokenSecret'  => $_POST['tokenSecret'],
+			'snsUid'  => $model->postData['snsUid'],
+			'tokenSecret'  => $model->postData['tokenSecret'],
 			'id' => $returnId
 		);
 		sendPostQuery($url,$params);		
