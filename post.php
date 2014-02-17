@@ -22,7 +22,6 @@ require_once("XML/Unserializer.php");
 
 //画像合成クラス
 //require_once(BASE_URI."/lib/PPM/ImageAnnotate.php");
-require_once 'lib/autoload.php';
 
 $clientId = CLIENT_ID;
 
@@ -34,29 +33,12 @@ $mailflg = 1;
 
 $path_to_json = "/home/".$clientId."/public_html/haken/init/init.json";
 //---------------------------------------------------
-define("INIT_FILE","init/init.json");
-define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
-define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http://'));
-define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']));
+$postData = (isUrlEncoded($_POST))? urldecode_array($_POST) : $_POST;
 
-//モデルを構築し
-$model = new Model();
-
-//設定情報とエラメをロード。設定情報とエラメ情報をセット
-$init = new JSONLoader(INIT_FILE);
-$model->setInit($init->getJsonData());
-
-$errorMessage = new JSONLoader(ERROR_MESSAGE_FILE);
-$model->setErrorMessage($errorMessage->getJsonData());
-
-//ユーザー情報をModelへセット
-$user = new User($model);
-// POSTの値を取得
-print_r($model->postData);
-$im = $model->postData["image"]; // 画像名
-$title = $model->postData["enquete2"];//ニックネーム
-$body = $model->postData["enquete3"];
+$im = $postData["image"]; // 画像名
+$title = $postData["enquete2"];//ニックネーム
+$body = $postData["enquete3"];
 
 //echo mb_convert_encoding($title, "UTF-8");
 //echo mb_convert_encoding($body, "UTF-8");
@@ -87,13 +69,12 @@ $newDb = new DB;
 $db = $newDb->conn();
 $db->beginTransaction();
 
-//print_r($jsondata);
 //emailアドレスを取り出す
-if(!empty($model->postData)){
+if(!empty($postData)){
 	foreach($jsondata['enqueteList'] as $k=>$v){
 		if(array_key_exists("EMAIL",$v["ERROR_CHECK"])){
 			$key = $v["NAME"];
-			$EMAIL = $model->postData[$key];
+			$EMAIL = $postData[$key];
 		}
 	}
 }else{
@@ -170,7 +151,7 @@ foreach($jsondata['enqueteList'] as $k=>$v){
 		"client_id" => CLIENT_ID,
 		"data_id" => $mid,
 		"enq_num" => $enq_num,
-		"enq_text" => $model->postData[$enq_text_key]
+		"enq_text" => $postData[$enq_text_key]
 	);
 	if($enq_num){
 		$imPost->setOptData($db, $arrData);
@@ -206,13 +187,13 @@ $ms->logs("send mail $returnId $co $datetime");
 }
 
 //各SNSのタイムラインへ投稿
-switch($model->postData['snsName']){
+switch($postData['snsName']){
 	case 'facebook':
 		$url="https://lunch.pitcom.jp/haken/facebook.php";
 		$params = Array(
 			'mode'  => 'post',
-			'snsUid'  => $model->postData['snsUid'],
-			'tokenSecret'  => $model->postData['tokenSecret']
+			'snsUid'  => $postData['snsUid'],
+			'tokenSecret'  => $postData['tokenSecret']
 		);
 		sendPostQuery($url,$params);
 		break;
@@ -221,8 +202,8 @@ switch($model->postData['snsName']){
 		$url="https://lunch.pitcom.jp/haken/tw_callback.php";
 		$params = Array(
 			'mode'  => 'post',
-			'snsUid'  => $model->postData['snsUid'],
-			'tokenSecret'  => $model->postData['tokenSecret'],
+			'snsUid'  => $postData['snsUid'],
+			'tokenSecret'  => $postData['tokenSecret'],
 			'id' => $returnId
 		);
 		sendPostQuery($url,$params);		
@@ -259,4 +240,30 @@ function sendPostQuery($url,$params = array()){
 	}
 	$content = file_get_contents($url, false, stream_context_create($options));
 	return $content;
+}
+function isUrlEncoded($array){
+	if(!empty($array) && is_array($array)){
+		foreach($array as $k=> $v){
+			if(!empty($array[$k]) && !is_array($array[$k])){
+				if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array[$k])){
+					return true;
+				}
+			}
+		}
+	}else if(!empty($array)){
+			if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array)){
+				return true;
+			}
+	}
+	
+	return false;
+}
+function urldecode_array($array){
+	foreach($array as $k=> $v){
+		if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array[$k])){
+			$encodedstr = preg_replace("/((%[0-9A-z]{2,3}){1,})/", "$0", $array[$k]);
+			$array[$k] = urldecode($encodedstr);
+		}
+	}
+	return $array;
 }

@@ -17,7 +17,6 @@ define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http://'));
 define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']));
 
-print_r($_POST);
 //モデルを構築し
 $model = new Model();
 

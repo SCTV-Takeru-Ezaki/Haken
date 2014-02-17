@@ -15,18 +15,17 @@ class Utility{
 		return ($_carrier == 'au' && $_device == 'featurephone')? true : false;
 	}
 	public static function isUrlEncoded($array){
-		//print_r($array);
 		if(!empty($array) && is_array($array)){
 			foreach($array as $k=> $v){
-				if(!empty($array[$k]) && !is_array($array)){
-					if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array[$k])){
+				if(!empty($array[$k]) && !is_array($array[$k])){
+					if(preg_match("/(%[0-9A-z]{2,4}){1,}/", $array[$k])){
 						//echo "{$array[$k]}true";
 						return true;
 					}
 				}
 			}
 		}else if(!empty($array)){
-				if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array)){
+				if(preg_match("/(%[0-9A-z]{2,4}){1,}/", $array)){
 					return true;
 				}
 		}
@@ -35,8 +34,8 @@ class Utility{
 	}
 	public static function urldecode_array($array){
 		foreach($array as $k=> $v){
-			if(preg_match("/(%[0-9A-z]{2,3}){1,}/", $array[$k])){
-				$encodedstr = preg_replace("/((%[0-9A-z]{2,3}){1,})/", "$0", $array[$k]);
+			if(preg_match("/(%[0-9A-z]{2,4}){1,}/", $array[$k])){
+				$encodedstr = preg_replace("/((%[0-9A-z]{2,4}){1,})/", "$0", $array[$k]);
 				$array[$k] = urldecode($encodedstr);
 			}
 		}

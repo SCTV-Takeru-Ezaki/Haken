@@ -29,8 +29,9 @@ class FormView extends View{
 		}
 	}
 	private function createPostView(){
-		print_r($this->model->postData);
-		$post = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
+		//print_r($this->model->postData);
+		//$post = $this->model->postData;
+		$post = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($this->model->postData))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
 		if(!empty($this->model->postData['edit'])){
 			if(preg_match("/編集/",$this->model->postData['edit'])){
 				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$post);
@@ -38,9 +39,8 @@ class FormView extends View{
 			}
 		}
 
-		//$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
-		$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
-		echo $result;
+		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
+		//$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
 		
 		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
 		$this->publish();
@@ -86,7 +86,10 @@ class FormView extends View{
 					break;
 				default:
 					//$value = $this->model->postData[$enq['NAME']];
-					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$value}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
+					//echo "::::::".Utility::isUrlEncoded($value).":::::";
+					$label = (!empty($this->model->postData[$enq['NAME']]))?$this->model->postData[$enq['NAME']]:'';
+					$value = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($value))? urlencode($value) : $value;
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 			}
 
