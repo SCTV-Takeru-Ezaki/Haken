@@ -38,19 +38,36 @@ class FormView extends View{
 				exit;	
 			}
 		}
-
-		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
-		//$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
-		if(!empty($result['error'])){
-			$this->templateHtml->find('span[id=resultText]',0)->innertext = $result['error'];
-		}else{
-			$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
+		$tag = "";
+		if(!empty($this->model->postData['image'])){
+			$ext = explode(".",$this->model->postData['image']);
+			$n = count($ext);
+			$image = new Imagick($this->model->postData['image']);
+			$image->thumbnailImage(400, 0);
+			$this->model->postData['image'] = "data:image/".$ext[$n-1].";base64,".base64_encode($image);
 		}
+		if(empty($this->model->postData['snstype']) || empty($this->model->postData['snsid'])){
+			$this->model->postData['snstype']	= (!empty($this->model->postData['snsName']))? $this->model->postData['snsName'] : '';
+			$this->model->postData['snsid']	= (!empty($this->model->postData['snsUid']))? $this->model->postData['snsUid'] : '';
+		}
+		foreach($this->model->postData as $k => $v){
+			//
+			$tag .= "<input type=\"hidden\" name=\"$k\" value=\"$v\">";
+		}
+
+		//予約型
+		//$result = $this->sendPostSocket($_SERVER['SERVER_NAME'],'/client/client.php',$this->model->postData);
+		//旧方式　たぶん今後は使わない
+		//$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
+		
+		$this->templateHtml->find('span[id=result]',0)->innertext = $tag;//$result['id'];
+
+
+
 		$this->publish();
 		if(!empty($html)){
 			$html->clear();
 		}
-		
 	}
 
 	private function createConfirmView(){
@@ -70,7 +87,7 @@ class FormView extends View{
 			$value = (!empty($this->model->postData[$enq['NAME']]))?$this->model->postData[$enq['NAME']]:'';
 			switch($enq['TYPE']){
 				case 'FILE':
-					$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img class=\"pure-u\" src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\"></div></div>";
+					$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img width=\"240\" class=\"pure-u\" src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\"></div></div>";
 					break;
 				case 'CHECKBOX':
 					if(!empty($this->model->postData[$enq['NAME']])){
@@ -154,10 +171,10 @@ class FormView extends View{
 					}
 					$exts = rtrim($exts, ",");
 
-					$deleteButton = (empty($this->model->postData['snsName']))? '<input type="submit" name="CMD" value="画像を削除">' : '';
+					$deleteButton = '<br /><input type="submit" name="CMD" value="画像を削除">';
 
 					if(!empty($this->model->postData[$enq['NAME']]) ){
-						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">{$deleteButton}</div></div>\n";
+						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img width=\"240\" src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">{$deleteButton}</div></div>\n";
 					}else{
 						$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" accept=\"{$exts}\" style=\"{$style}\">\n";
 					}
