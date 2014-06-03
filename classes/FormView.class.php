@@ -58,9 +58,10 @@ class FormView extends View{
 		//予約型
 		//$result = $this->sendPostSocket($_SERVER['SERVER_NAME'],'/client/client.php',$this->model->postData);
 		//旧方式　たぶん今後は使わない
-		//$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
+		// $result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
+		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post),true);
 		
-		$this->templateHtml->find('span[id=result]',0)->innertext = $tag;//$result['id'];
+		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];//$result['id'];$tag;
 
 
 

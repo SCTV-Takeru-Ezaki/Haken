@@ -31,7 +31,7 @@ define("REALTIME_FLAG", 0);
 
 $mailflg = 1;
 
-$path_to_json = "/home/".$clientId."/public_html/haken/init/init.json";
+$path_to_json = "/home/".$clientId."/public_html/form/init/init.json";
 //---------------------------------------------------
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
@@ -108,7 +108,7 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = "/home/".$clientId."/public_html/haken/".$im;
+$testPath = "/home/".$clientId."/public_html/form/".UPLOAD_DIR.$im;
 
 //im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
