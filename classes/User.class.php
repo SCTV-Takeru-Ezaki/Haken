@@ -68,7 +68,7 @@ class User{
 			return false;
 		}
 		//SNSプラグインから画像を渡された場合
-		if(!empty($get['image'])) return base64_decode($get['image']);
+		if(!empty($get['image'])) return $get['image'];
 		//編集モードだった場合
 		if(!empty($post['image']) && empty($files["image"]["tmp_name"])) return $post['image'];
 		//通常投稿(確認画面)
@@ -82,8 +82,11 @@ class User{
 			foreach($this->model->init['allowExtensions'] as $k => $v){
 				if(preg_match("/{$v}/",$mimeType)){
 					$ext = $v;
+					$tmp = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp.{$v}";
 					$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".{$v}";
-					return @move_uploaded_file($files["image"]["tmp_name"], $new)?$new:false;
+					@move_uploaded_file($files["image"]["tmp_name"], $tmp)?$tmp:false;
+					$this->orientationFixedImage($new,$tmp);
+					return $new;
 					break;
 				}
 			}
@@ -130,4 +133,60 @@ class User{
 					'STATUS' => $this->getStatus()
 		);
 	}
+	private function orientationFixedImage($output,$input){
+		$image = new Imagick($input);
+		$exif_datas = @exif_read_data($input);
+		if(isset($exif_datas['Orientation'])){
+			  $orientation = $exif_datas['Orientation'];
+  
+			  if($image){
+					  // 未定義
+					  if($orientation == 0){
+					  // 通常
+					  }else if($orientation == 1){
+					  // 左右反転
+					  }else if($orientation == 2){
+						$image->flopImage();
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+						$image->writeImage();
+									  // 180°回転
+					  }else if($orientation == 3){
+						$image->rotateImage(new ImagickPixel(), 180);
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+						$image->writeImage();
+					  // 上下反転
+					  }else if($orientation == 4){
+						$image->rotateImage(new ImagickPixel(), 270);
+						$image->flopImage();
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+						$image->writeImage();
+					  // 反時計回りに90°回転 上下反転
+					  }else if($orientation == 5){
+						$image->rotateImage(new ImagickPixel(), 90);
+						$image->flopImage();
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+						$image->writeImage();
+					  // 時計回りに90°回転
+					  }else if($orientation == 6){
+						$image->rotateImage(new ImagickPixel(), 90);
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+					  // 時計回りに90°回転 上下反転
+					  }else if($orientation == 7){
+						$image->rotateImage(new ImagickPixel(), 270);
+						$image->flopImage();
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+						$image->writeImage();
+					  // 反時計回りに90°回転
+					  }else if($orientation == 8){
+						$image->rotateImage(new ImagickPixel(), 270);
+						$image->setimageorientation(imagick::ORIENTATION_TOPLEFT);
+						$image->writeImage();
+					  }
+			  }
+		}
+		// 画像の書き出し
+		$image->writeImage($output);
+		return false;
+	}
+
 }
