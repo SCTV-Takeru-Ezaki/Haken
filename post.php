@@ -125,15 +125,17 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = "/home/".$clientId."/public_html/form/".UPLOAD_DIR.$im;
-$file->log("/home/".$clientId."/public_html/form/".UPLOAD_DIR.$im);
+$testPath = "/home/".$clientId."/public_html/form/".$im;
+$file->log("/home/".$clientId."/public_html/form/".$im);
 //im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
+$file->log("to path:{$toPath}");
 copy($testPath, $toPath);
 chmod($toPath, 0666);
 
 $toPath = RESIZE_DIR_PATH."/{$fileName}";
 
+$file->log("r to path:{$toPath}");
 $bool = $imPost->execImageRegist($fileName, $toPath);
 if(!$bool){
 	echo "画像が保存できませんでした。";
