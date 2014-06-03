@@ -9,7 +9,7 @@
             "ERROR_CHECK": {
                 "REQUIRE": 0,
                 "FILETYPE": 0,
-                "FILESIZE": 0
+                "FILESIZE": 3
             },
             "PROPS": {}
         },
@@ -31,10 +31,11 @@
         },
         {
             "NAME": "enquete2",
-            "TITLE": "名前",
+            "TITLE": "メールアドレス",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
-                    "REQUIRE":0
+                    "REQUIRE":0,
+                    "EMAIL":0
                 },
             "PROPS": {
                 "size": 32,
@@ -44,10 +45,21 @@
         },
         {
             "NAME": "enquete3",
+            "TITLE": "名前",
+            "TYPE": "TEXT",
+            "ERROR_CHECK": {
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 30,
+                "class": "textForm"
+            }
+        },
+        {
+            "NAME": "enquete4",
             "TITLE": "コメント",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
-                    "REQUIRE":0
                 },
             "PROPS": {
                 "size": 32,

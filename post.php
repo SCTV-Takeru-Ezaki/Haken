@@ -6,7 +6,7 @@ ini_set('error_reporting', E_ALL);
 mb_language("uni");
 // 内部文字エンコードを設定する
 mb_internal_encoding("UTF-8");
-//mb_detect_order("ASCII,JIS,EUC-JP,SJIS,UTF-8");
+define('DUPLICATE_LOG','log/duplicateList.log');
 
 require_once("../pitadmin/current.php"); // pitadminディレクトリ直下にあるcurrent.phpを指定
 
@@ -33,7 +33,12 @@ $mailflg = 1;
 
 $path_to_json = "/home/".$clientId."/public_html/haken/init/init.json";
 //---------------------------------------------------
-
+if(duplicateChk()){
+	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
+	$retJson = json_encode($retData);
+	echo $retJson;
+	exit;
+}
 $postData = (isUrlEncoded($_POST))? urldecode_array($_POST) : $_POST;
 
 $im = $postData["image"]; // 画像名
@@ -266,4 +271,30 @@ function urldecode_array($array){
 		}
 	}
 	return $array;
+}
+function duplicateChk(){
+	//最新の投稿データをハッシュ化
+	$newTime = time();
+	$newData = md5(implode("\t",$_POST))."\n";
+
+	//過去データをロード
+	$oldList = file(DUPLICATE_LOG);
+
+	foreach($oldList as $k => $v){
+		list($t,$h) = explode("\t",$v);
+		$dif = $newTime - $t;
+		if($newData == $h && $dif < 180){
+			return true;
+		}
+	}
+	array_unshift($oldList,"{$newTime}\t".$newData);
+
+	$fp = fopen(DUPLICATE_LOG,"w+");
+	$c = (count($oldList) <10)? count($oldList):10;
+	if(flock($fp, LOCK_EX)){
+		for($i=0;$i<$c;$i++){
+			fwrite($fp,$oldList[$i]);
+		}
+	}
+	return false;
 }

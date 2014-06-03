@@ -41,12 +41,16 @@ class FormView extends View{
 
 		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
 		//$result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
-		
-		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
+		if(!empty($result['error'])){
+			$this->templateHtml->find('span[id=resultText]',0)->innertext = $result['error'];
+		}else{
+			$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];
+		}
 		$this->publish();
 		if(!empty($html)){
 			$html->clear();
 		}
+		
 	}
 
 	private function createConfirmView(){
