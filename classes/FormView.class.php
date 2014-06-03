@@ -60,8 +60,12 @@ class FormView extends View{
 		//旧方式　たぶん今後は使わない
 		// $result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
 		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post),true);
-		
-		$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];//$result['id'];$tag;
+
+		if(!empty($result['id'])){
+			$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];//$result['id'];$tag;
+		}else{
+			$this->templateHtml->find('span[id=resultText]',0)->innertext = $result['error'];//$result['id'];$tag;
+		}
 
 
 

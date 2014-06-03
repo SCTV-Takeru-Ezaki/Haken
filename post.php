@@ -19,11 +19,19 @@ require_once(BASE_URI."/lib/PPM/Exec.php");
 require_once(BASE_URI."/lib/PPM/Api.php");
 require_once("XML/Serializer.php");
 require_once("XML/Unserializer.php");
-
+require_once 'Log.php';
 //画像合成クラス
 //require_once(BASE_URI."/lib/PPM/ImageAnnotate.php");
 
 $clientId = CLIENT_ID;
+if(empty($clientId)){
+	$retData = array("error" =>"クライアントIDが空です");
+	$retJson = json_encode($retData);
+	echo $retJson;
+	$file->log("DUP!!");
+	exit;
+
+}
 
 //------------------設定項目-------------------------
 // リアルタイムフラグ チェックDEL時：1,チェックUP：0
@@ -33,17 +41,22 @@ $mailflg = 1;
 
 $path_to_json = "/home/".$clientId."/public_html/form/init/init.json";
 //---------------------------------------------------
+$file = &Log::factory('file', './log/out.log', 'POST.PHP');
+$file->log("DUP CHK START");
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
 	$retJson = json_encode($retData);
 	echo $retJson;
+	$file->log("DUP!!");
 	exit;
 }
+
 $postData = (isUrlEncoded($_POST))? urldecode_array($_POST) : $_POST;
 
+
 $im = $postData["image"]; // 画像名
-$title = $postData["enquete2"];//ニックネーム
-$body = $postData["enquete3"];
+$title = $postData["enquete3"];//ニックネーム
+$body = $postData["enquete4"];
 
 //echo mb_convert_encoding($title, "UTF-8");
 //echo mb_convert_encoding($body, "UTF-8");
@@ -55,9 +68,10 @@ if(REALTIME_FLAG){
     $status = UNCHECKED;
 }
 
+
 $htb = file_get_contents($path_to_json);
 $jsondata = json_decode($htb,true);
-
+$file->log($path_to_json);
 //返信メール
 if($mailflg){
 define("CURRENT_MAIL_DIR", "/home/".$clientId."/msave");
@@ -83,15 +97,18 @@ if(!empty($postData)){
 		}
 	}
 }else{
+	$file->log("EMPTY POST!!");
 	exit;
 }
 
+$file->log("EMAIL:{$EMAIL}");
 
 // ID、midを取得
 // midは現状idを利用しているのと、画像ファイル名にしているため、
 // 先にidを取得しておく。
 // getNewIdで取得できるIDはcommon.phpのSEQ_NAMEにて指定
 $newId = $imPost->getNewId($db);
+$file->log("$newId");
 $mid = sprintf("%05d", $newId);
 
 $fileName = "{$mid}.jpg";
@@ -109,7 +126,7 @@ if(REALTIME_FLAG){
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
 $testPath = "/home/".$clientId."/public_html/form/".UPLOAD_DIR.$im;
-
+$file->log("/home/".$clientId."/public_html/form/".UPLOAD_DIR.$im);
 //im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
 copy($testPath, $toPath);
@@ -120,6 +137,7 @@ $toPath = RESIZE_DIR_PATH."/{$fileName}";
 $bool = $imPost->execImageRegist($fileName, $toPath);
 if(!$bool){
 	echo "画像が保存できませんでした。";
+	$file->log("cant save image!!");
 	exit;
 }
 
@@ -217,6 +235,7 @@ switch($postData['snsName']){
 		//通常投稿は何もしない
 		break;
 }
+$file->log("echo IDs");
 
 $retData = array("id" =>$returnId);
 $retJson = json_encode($retData);
