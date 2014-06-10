@@ -68,7 +68,7 @@ class User{
 			return false;
 		}
 		//SNSプラグインから画像を渡された場合
-		if(!empty($get['image'])) return $get['image'];
+		if(!empty($get['image'])) return base64_decode($get['image']);
 		//編集モードだった場合
 		if(!empty($post['image']) && empty($files["image"]["tmp_name"])) return $post['image'];
 		//通常投稿(確認画面)
@@ -129,7 +129,7 @@ class User{
 	}
 	private function checkTerm(){
 		$conf = array('mode' => 0777, 'timeFormat' => '%X %x');
-		$display = &Log::singleton('display', '', '', $conf, PEAR_LOG_DEBUG);
+//		$display = &Log::singleton('display', '', '', $conf, PEAR_LOG_DEBUG);
 
 		$format = '%Y-%m-%d %H:%M:%S';
 		//開始日の日付フォーマットチェック

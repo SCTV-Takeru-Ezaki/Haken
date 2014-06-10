@@ -147,7 +147,8 @@ class FormView{
 
 		$header = Array(	"Content-Type: application/x-www-form-urlencoded",
 							"Referer: ".$_SERVER['HTTP_REFERER'],
-							"User-Agent: ".$this->model->userInfo['UA']
+							"User-Agent: ".$this->model->userInfo['UA'],
+						    'Authorization: Basic '.base64_encode('pmt:8504')
 			);
 		$options = array('http' => Array(
 			'method' => $method,

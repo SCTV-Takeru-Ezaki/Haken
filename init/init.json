@@ -1,7 +1,7 @@
 {
     "templateDir": "templateDir/",
-    "startDate": "2014-06-09 00:00:00",
-    "endDate": "2014-06-10 00:00:00",
+    "startDate": "2000-06-09 00:00:00",
+    "endDate": "2114-06-10 00:00:00",
     "allowExtensions": "jpg,jpeg,png,gif,bmp,ms-bmp,x-ms-bmp,x-MS-bmp,x-bmp,x-bitmap,x-xbitmap,x-win-bitmap,x-windows-bmp",
     "enqueteList": [
         {
