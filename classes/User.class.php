@@ -141,9 +141,6 @@ class User{
 			$display->log('Format Error in init file at endData');
 		}
 
-		//$display = &Log::singleton('display', '', '', $conf, PEAR_LOG_DEBUG);
-		//$display->log(time().">=".strtotime($this->model->init['startDate'])." && ".time()."<".strtotime($this->model->init['endDate']));
-		
 		if(time()>=strtotime($this->model->init['startDate']) && time()<=strtotime($this->model->init['endDate'])){
 			//期間内
 			return true;
