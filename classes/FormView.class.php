@@ -165,6 +165,8 @@ class FormView{
 	private function createFormView(){
 		//HTMLをいっかい生成してから選択済みをチェックしてまた再生成する
 		//非効率な気がしないでもない。
+
+		$this->model->postData = Utility::htmlspecialchars_decode_array($this->model->postData);
 		foreach($this->model->init['enqueteList'] as $enq){
 			$tag = "";
 			switch($enq['TYPE']){
