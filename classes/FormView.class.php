@@ -23,6 +23,14 @@ class FormView{
 			case "post":
 				$this->createPostView();
 				break;
+			case "before":
+			case "closed":
+				$this->publish();
+				if(!empty($html)){
+					$html->clear();
+				}
+
+				break;
 			default:
 				header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
 				break;

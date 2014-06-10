@@ -121,7 +121,44 @@ class User{
 		return ($this->carrier == 'kddi' && $this->device == 'featurephone')? true : false;
 	}
 	private function getStatus(){
-		return (!empty($_GET))? $_GET : false;
+
+		return $this->checkStatus();
+	}
+	private function checkStatus(){
+		return (!is_array($this->checkTerm()))? ((!empty($_GET))? $_GET : false):$this->checkTerm();
+	}
+	private function checkTerm(){
+		$conf = array('mode' => 0777, 'timeFormat' => '%X %x');
+		$display = &Log::singleton('display', '', '', $conf, PEAR_LOG_DEBUG);
+
+		$format = '%Y-%m-%d %H:%M:%S';
+		//開始日の日付フォーマットチェック
+		if(!strptime($this->model->init['startDate'], $format)){
+			$display->log('Format Error in init file at startData');
+		}
+		//終了日の日付フォーマットチェック
+		if(!strptime($this->model->init['endDate'], $format)){
+			$display->log('Format Error in init file at endData');
+		}
+
+		//$display = &Log::singleton('display', '', '', $conf, PEAR_LOG_DEBUG);
+		//$display->log(time().">=".strtotime($this->model->init['startDate'])." && ".time()."<".strtotime($this->model->init['endDate']));
+		
+		if(time()>=strtotime($this->model->init['startDate']) && time()<=strtotime($this->model->init['endDate'])){
+			//期間内
+			return true;
+			//$display->log('true');
+		}else if(time()<strtotime($this->model->init['startDate'])){
+			//開始前
+			//$display->log('before');
+			return array("page"=>"before");
+		}else{
+			//終了
+			//$display->log('closed');
+			return array("page"=>"closed");
+		}
+
+		
 	}
 	private function setUserInfo(){
 		$info = array();

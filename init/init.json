@@ -1,6 +1,8 @@
 {
     "templateDir": "templateDir/",
-    "allowExtensions": "jpg,jpeg,png",
+    "startDate": "2014-06-09 00:00:00",
+    "endDate": "2014-06-10 00:00:00",
+    "allowExtensions": "jpg,jpeg,png,gif,bmp,ms-bmp,x-ms-bmp,x-MS-bmp,x-bmp,x-bitmap,x-xbitmap,x-win-bitmap,x-windows-bmp",
     "enqueteList": [
         {
             "NAME": "image",
@@ -15,14 +17,14 @@
         },
         {
             "NAME": "enquete1",
-            "TITLE": "規約に同意しますか",
+            "TITLE": "下記、利用規約に同意しますか",
             "TYPE": "AGREE",
             "ERROR_CHECK": {
                 "REQUIRE": 0
             },
             "PROPS": {
                 "label": [
-                    "同意します！！！！"
+                    "同意します。"
                 ],
                 "value": [
                     1
@@ -31,21 +33,18 @@
         },
         {
             "NAME": "enquete2",
-            "TITLE": "メールアドレス",
-            "TYPE": "TEXT",
+            "TITLE": "性別",
+            "TYPE": "RADIO",
             "ERROR_CHECK": {
-                    "REQUIRE":0,
-                    "EMAIL":0
                 },
             "PROPS": {
-                "size": 32,
-                "maxlength": 30,
-                "class": "textForm"
+                "label":["男性","女性"],
+                "value":[1,2]
             }
         },
         {
             "NAME": "enquete3",
-            "TITLE": "名前",
+            "TITLE": "年齢",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
                 },
@@ -55,18 +54,7 @@
                 "class": "textForm"
             }
         },
-        {
-            "NAME": "enquete4",
-            "TITLE": "コメント",
-            "TYPE": "TEXT",
-            "ERROR_CHECK": {
-                },
-            "PROPS": {
-                "size": 32,
-                "maxlength": 30,
-                "class": "textForm"
-            }
-        },
+
         {
             "NAME": "enquete10",
             "TITLE": "",
