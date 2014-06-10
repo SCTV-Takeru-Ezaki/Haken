@@ -1,6 +1,6 @@
 <?php
 require_once 'lib/simple_html_dom.php';
-class FormView extends View{
+class FormView{
 	var $model;
 	var $templateHtml;
 	
@@ -10,7 +10,7 @@ class FormView extends View{
 		$this->loadTemplate();
 	}
 	private function loadTemplate(){
-		$this->templateHtml = file_get_html($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
+		$this->templateHtml = file_get_html($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html', false, null, -1, -1, true, true, DEFAULT_TARGET_CHARSET, false);
 	}
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){
@@ -113,7 +113,7 @@ class FormView extends View{
 				default:
 					//$value = $this->model->postData[$enq['NAME']];
 					//echo "::::::".Utility::isUrlEncoded($value).":::::";
-					$label = (!empty($this->model->postData[$enq['NAME']]))?$this->model->postData[$enq['NAME']]:'';
+					$label = nl2br((!empty($this->model->postData[$enq['NAME']]))?$this->model->postData[$enq['NAME']]:'');
 					$value = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($value))? urlencode($value) : $value;
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
@@ -192,7 +192,7 @@ class FormView extends View{
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
 
 					//入力済み項目を反映させる
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
 					$html->find('input',0)->class = "pure-input-1";
 					$tag = $html->find('input',0);
@@ -204,7 +204,7 @@ class FormView extends View{
 					$tag = "<textarea name=\"{$enq['NAME']}\">{$value}</textarea>\n";
 
 					//入力済み項目を反映させる
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$html->find('textarea',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
 					$html->find('textarea',0)->class = "pure-input-1";
 					$tag = $html->find('textarea',0);
@@ -217,7 +217,7 @@ class FormView extends View{
 					}
 					
 					//入力済み項目を反映させる
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
 					$k=0;
 					$tag = "<select name=\"{$enq['NAME']}\">\n";
@@ -238,7 +238,7 @@ class FormView extends View{
 					}
 
 					//入力済み項目を反映させる
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
 					$k=0;
 					foreach($html->find('input') as $el){
@@ -258,7 +258,7 @@ class FormView extends View{
 					}
 
 					//入力済み項目を反映させる
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
 					$k=0;
 					foreach($html->find('input') as $el){
@@ -279,7 +279,7 @@ class FormView extends View{
 					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"1\"> ";
 
 					//入力済み項目を反映させる
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
 					$k=0;
 					foreach($html->find('input') as $el){
@@ -294,7 +294,7 @@ class FormView extends View{
 					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
-					$html = str_get_html($tag);
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
 					$tag = $html->find('input',0);
 					break;
@@ -349,14 +349,16 @@ class FormView extends View{
 				$vp = "width=device-width,initial-scale=1,user-scalable=no";
 				break;
 			default :
+			
 				$this->templateHtml->find('html',0)->outertext = '<?xml version="1.0" encoding="utf-8"?>'.$this->templateHtml->find('html',0)->outertext;
+				
 				$vp = "";
 				break;
 		}
 		$this->templateHtml->find("meta[name=viewport]",0)->content = $vp;
 
 		//CSSをロード(現時点では共通)
-		$this->templateHtml = str_get_html($this->templateHtml);
+		//$this->templateHtml = str_get_html($this->templateHtml);
 
 		if(Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE'])){
 			//$this->templateHtml->find('meta[http-equiv*=Content-type]',0)->content = 'text/html; charset=shift_jis';

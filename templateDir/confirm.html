@@ -1,42 +1,28 @@
 <html>
 <head>
-<title>無題ドキュメント</title>
+<title>Instant MosaiQ</title>
 <meta name="viewport" />
 <meta http-equiv="Cache-Control" content="no-cache" />
-<link href="css/pure-min.css" rel="stylesheet" media="screen" />
+<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+<script type="text/javascript" src="//typesquare.com/accessor/script/typesquare.js?p9kThcyX840%3D" charset="utf-8"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
 <link href="css/style.css" rel="stylesheet" media="screen" />
 </head>
-
 <body>
-<div class="pure-g-r" id="wrapper">
-<div id="bg">
-<div class="main">
-<div class="pure-u-1">
-<legend>投稿フォーム</legend>
-<form action="index.php?page=post" method="post">
+<div class="pure-g maintitle">
+  <div class="pure-u-1"><h1><a href="/"><img class="banner_img" src="img/title.png" width="580" height="76" alt="Instant MosaiQ" /></a></h1></div>
+  <div class="pure-u-1"><div id="stepNavi"><img class="banner_img" src="img/step2.png"></div></div>
+</div>
+
+
+<div class="pure-g-r mainbox">
+<div class="c-box">
+<form action="form.php?page=post" method="post" class="pure-form">
+<legend>アップロード画像の確認</legend>
 <p>
   <span id="image"></span>
 </p>
-<p>
-  <span id="enquete1"></span>
-</p>
-<p>
-  <span id="enquete2"></span>
-</p>
-<p>
-  <span id="enquete3"></span>
-</p>
-<p>
-  <span id="enquete4"></span>
-</p>
-<p>
-  <span id="enquete5"></span>
-</p>
-<p>
-  <span id="enquete6"></span>
-  
-  <span id="enquete10"></span>
-</p>
+
 
 <p>
 	<span id="snsName"></span>
@@ -51,7 +37,17 @@
 </form>
 </div>
 </div>
-</div>
-</div>
+<div id="copyright">Powered by <a href="http://pitcom.jp">PITCOM</a></div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-7003165-7', 'instantmosaiq.com');
+  ga('send', 'pageview');
+
+</script>
 </body>
 </html>

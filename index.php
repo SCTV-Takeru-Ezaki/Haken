@@ -6,7 +6,7 @@ mb_internal_encoding("UTF-8");
 
 //オートロードを有効に
 require_once 'lib/autoload.php';
-require_once 'Log.php';
+//require_once 'Log.php';
 
 define("POST_EXEC","post.php");
 define("UPLOAD_DIR","uploads/");
@@ -16,7 +16,11 @@ define("INIT_FILE","init/init.json");
 define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
 define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http://'));
-define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].dirname($_SERVER['REQUEST_URI']));
+
+$d = dirname($_SERVER['REQUEST_URI']);
+$d = ($d != "/")? dirname($_SERVER['REQUEST_URI']) : "/".basename($_SERVER['REQUEST_URI']);
+
+define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].$d);
 
 //モデルを構築し
 $model = new Model();
