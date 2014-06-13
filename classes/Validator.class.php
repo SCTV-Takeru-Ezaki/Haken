@@ -30,9 +30,9 @@ class Validator{
 		if(!empty($value)){
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
 			//$value = (Utility::isUrlEncoded($value))? urldecode($value) : $value;
-			$mimeType = finfo_file($finfo, $value);
+			$mimeType = strtolower(finfo_file($finfo, $value));
 			finfo_close($finfo);
-			
+
 			$result = 1;
 			foreach($this->model->init['allowExtensions'] as $k => $v){
 				if(preg_match("/{$v}/",$mimeType)){
@@ -71,7 +71,7 @@ class Validator{
 	private function isntEMAIL($value = ''){
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
-		if(count(preg_match('/.+@.+\..+/', $value, $m)) > 0){
+		if(preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/', $value)){
 			return 0;
 		}else{
 			return 1;

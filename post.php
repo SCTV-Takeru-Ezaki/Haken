@@ -28,7 +28,6 @@ if(empty($clientId)){
 	$retData = array("error" =>"クライアントIDが空です");
 	$retJson = json_encode($retData);
 	echo $retJson;
-	$file->log("DUP!!");
 	exit;
 
 }
@@ -42,12 +41,11 @@ $mailflg = 1;
 $path_to_json = "/home/".$clientId."/public_html/form/init/init.json";
 //---------------------------------------------------
 $file = &Log::factory('file', './log/out.log', 'POST.PHP');
-$file->log("DUP CHK START");
+
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
 	$retJson = json_encode($retData);
 	echo $retJson;
-	$file->log("DUP!!");
 	exit;
 }
 
@@ -55,8 +53,15 @@ $postData = (isUrlEncoded($_POST))? urldecode_array($_POST) : $_POST;
 
 
 $im = $postData["image"]; // 画像名
-$title = $postData["enquete3"];//ニックネーム
-$body = $postData["enquete4"];
+if(preg_match("/data:[^,]+,.+/i", $im)){
+	$im = preg_replace("/data:[^,]+,/i","",$im);
+	$im = base64_decode($im);
+	$image = imagecreatefromstring($im);
+	imagepng($image ,"/home/".$clientId."/public_html/form/uploads/".md5(implode("\t",$_POST)).".png");
+	$im = "uploads/".md5(implode("\t",$_POST)).".png";
+}
+$title = "";//$postData["enquete3"];//ニックネーム
+$body = "";//$postData["enquete6"];
 
 //echo mb_convert_encoding($title, "UTF-8");
 //echo mb_convert_encoding($body, "UTF-8");
@@ -71,7 +76,7 @@ if(REALTIME_FLAG){
 
 $htb = file_get_contents($path_to_json);
 $jsondata = json_decode($htb,true);
-$file->log($path_to_json);
+
 //返信メール
 if($mailflg){
 define("CURRENT_MAIL_DIR", "/home/".$clientId."/msave");
@@ -149,9 +154,9 @@ $arrPostData = array(
 	"client_id" => CLIENT_ID,
 	"mid" => $mid,
 	"status" => $status,
-	"mail_from" => $EMAIL,
-	"title" => $title,
-	"body" => $body,
+	"mail_from" => "",
+	"title" => "",
+	"body" => "",
 	"img_name" => "{$mid}.jpg",
 );
 

@@ -74,12 +74,13 @@ class User{
 		//通常投稿(確認画面)
 		if(empty($post['image']) && !empty($files["image"]["tmp_name"])){
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
-			$mimeType = finfo_file($finfo, $files["image"]["tmp_name"]);
+			$mimeType = strtolower(finfo_file($finfo, $files["image"]["tmp_name"]));
 			finfo_close($finfo);
 
 			$new = "";
 
 			foreach($this->model->init['allowExtensions'] as $k => $v){
+				$v = strtolower($v);
 				if(preg_match("/{$v}/",$mimeType)){
 					$ext = $v;
 					$tmp = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp.{$v}";
@@ -168,6 +169,7 @@ class User{
 		);
 	}
 	private function orientationFixedImage($output,$input){
+		$output = "jpg:{$output}";
 		$image = new Imagick($input);
 		$exif_datas = @exif_read_data($input);
 		if(isset($exif_datas['Orientation'])){

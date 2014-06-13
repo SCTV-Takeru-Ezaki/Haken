@@ -39,13 +39,18 @@ class FormView{
 	private function createPostView(){
 		//print_r($this->model->postData);
 		//$post = $this->model->postData;
-		$post = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($this->model->postData))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
+		$this->model->postData = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($this->model->postData))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
+		if(empty($_SERVER['HTTP_REFERER'])){
+			header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+			exit;	
+		}
 		if(!empty($this->model->postData['edit'])){
 			if(preg_match("/編集/",$this->model->postData['edit'])){
-				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$post);
+				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
 				exit;	
 			}
 		}
+
 		$tag = "";
 		if(!empty($this->model->postData['image'])){
 			$ext = explode(".",$this->model->postData['image']);
@@ -67,7 +72,8 @@ class FormView{
 		//$result = $this->sendPostSocket($_SERVER['SERVER_NAME'],'/client/client.php',$this->model->postData);
 		//旧方式　たぶん今後は使わない
 		// $result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
-		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post),true);
+		$this->model->postData = Utility::htmlspecialchars_decode_array($this->model->postData);
+		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
 
 		if(!empty($result['id'])){
 			$this->templateHtml->find('span[id=result]',0)->innertext = $result['id'];//$result['id'];$tag;
@@ -144,9 +150,9 @@ class FormView{
 	private function sendPostQuery($url,$params = array()){
 		$method = 'POST';
 		$data = http_build_query($params);
-
+		$ref = (!empty($_SERVER['HTTP_REFERER'])? $_SERVER['HTTP_REFERER']:'');
 		$header = Array(	"Content-Type: application/x-www-form-urlencoded",
-							"Referer: ".$_SERVER['HTTP_REFERER'],
+							"Referer: ".$ref,
 							"User-Agent: ".$this->model->userInfo['UA'],
 						    'Authorization: Basic '.base64_encode('pmt:8504')
 			);
