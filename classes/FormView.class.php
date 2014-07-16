@@ -91,6 +91,27 @@ class FormView{
 
 	private function createConfirmView(){
 		$this->checkWrongAccess();
+	    /*
+	    if (
+	        !isset($_FILES['image']['error']) ||
+	        is_array($_FILES['image']['error'])
+	    ) {
+	        throw new RuntimeException('Invalid parameters.');
+	    }
+
+	    // Check $_FILES['image']['error'] value.
+	    switch ($_FILES['image']['error']) {
+	        case UPLOAD_ERR_OK:
+	            break;
+	        case UPLOAD_ERR_NO_FILE:
+	            throw new RuntimeException('No file sent.');
+	        case UPLOAD_ERR_INI_SIZE:
+	        case UPLOAD_ERR_FORM_SIZE:
+	            throw new RuntimeException('Exceeded filesize limit.');
+	        default:
+	            throw new RuntimeException('Unknown errors.');
+	    }
+	    */
 
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			foreach($enq['ERROR_CHECK'] as $error => $value){

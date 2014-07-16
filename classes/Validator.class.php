@@ -32,6 +32,8 @@ class Validator{
 			//$value = (Utility::isUrlEncoded($value))? urldecode($value) : $value;
 			$mimeType = strtolower(finfo_file($finfo, $value));
 			finfo_close($finfo);
+			$file = &Log::factory('file', './log/out.log', 'Validator.PHP');
+			$file->log("File type:{$mimeType}");
 
 			$result = 1;
 			foreach($this->model->init['allowExtensions'] as $k => $v){
