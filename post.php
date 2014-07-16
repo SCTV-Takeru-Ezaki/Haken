@@ -60,8 +60,8 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 	imagepng($image ,"/home/".$clientId."/public_html/form/uploads/".md5(implode("\t",$_POST)).".png");
 	$im = "uploads/".md5(implode("\t",$_POST)).".png";
 }
-$title = "";//$postData["enquete3"];//ニックネーム
-$body = "";//$postData["enquete6"];
+$title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
+$body = $postData["enquete5"];//$postData["enquete5"];
 
 //echo mb_convert_encoding($title, "UTF-8");
 //echo mb_convert_encoding($body, "UTF-8");
@@ -154,9 +154,9 @@ $arrPostData = array(
 	"client_id" => CLIENT_ID,
 	"mid" => $mid,
 	"status" => $status,
-	"mail_from" => "",
-	"title" => "",
-	"body" => "",
+	"mail_from" => $EMAIL,
+	"title" => $title,
+	"body" => $body,
 	"img_name" => "{$mid}.jpg",
 );
 

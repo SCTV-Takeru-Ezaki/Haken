@@ -1,12 +1,12 @@
 {
     "templateDir": "templateDir/",
-    "startDate": "2000-06-09 00:00:00",
-    "endDate": "2114-06-10 00:00:00",
+    "startDate": "2014-07-04 00:00:00",
+    "endDate": "2014-08-18 23:59:59",
     "allowExtensions": "jpg,jpeg,png,gif,bmp,ms-bmp,x-ms-bmp,x-MS-bmp,x-bmp,x-bitmap,x-xbitmap,x-win-bitmap,x-windows-bmp",
     "enqueteList": [
         {
             "NAME": "image",
-            "TITLE": "画像",
+            "TITLE": "画像（必須）",
             "TYPE": "FILE",
             "ERROR_CHECK": {
                 "REQUIRE": 0,
@@ -17,7 +17,7 @@
         },
         {
             "NAME": "enquete1",
-            "TITLE": "下記、利用規約に同意しますか",
+            "TITLE": "下記、利用規約に同意しますか（必須）",
             "TYPE": "AGREE",
             "ERROR_CHECK": {
                 "REQUIRE": 0
@@ -33,35 +33,53 @@
         },
         {
             "NAME": "enquete2",
-            "TITLE": "性別",
-            "TYPE": "RADIO",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
             "ERROR_CHECK": {
                 },
             "PROPS": {
-                "label":["男性","女性"],
-                "value":[1,2]
+		"label": [""],
+                "value":["form"]
             }
         },
         {
             "NAME": "enquete3",
-            "TITLE": "年齢",
+            "TITLE": "メールアドレス（必須）",
+            "TYPE": "TEXT",
+            "ERROR_CHECK": {
+                "REQUIRE": 0,
+                "EMAIL":0
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 255,
+                "class": "textForm"
+            }
+        },
+        {
+            "NAME": "enquete4",
+            "TITLE": "ニックネーム（任意）",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
                 },
             "PROPS": {
                 "size": 32,
-                "maxlength": 30,
+                "maxlength": 20,
                 "class": "textForm"
             }
-        },
-
-        {
-            "NAME": "enquete10",
-            "TITLE": "",
-            "TYPE": "HIDDEN",
-            "ERROR_CHECK": {},
-            "PROPS": {"label": [""],"value": [""]}
         },        
+        {
+            "NAME": "enquete5",
+            "TITLE": "メッセージ（任意）",
+            "TYPE": "TEXTAREA",
+            "ERROR_CHECK": {
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 100,
+                "class": "textForm"
+            }
+        },                  
         {
             "NAME": "snsName",
             "TITLE": "",
