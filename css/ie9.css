@@ -1,0 +1,8 @@
+#bg{width:768px;}
+.main{width:568px;}
+#kiyaku{ 
+	overflow-y:scroll;
+	overflow-x:hidden;
+	white-space:normal;
+}
+
