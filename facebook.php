@@ -1,6 +1,6 @@
 <?php
 //FacebookSDKを読み込む
-require_once("./src/facebook.php");
+require_once("./lib/facebook.php");
 
 $snsName='facebook';
 $mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
@@ -86,7 +86,18 @@ if($mode=='get'){
 
 	$permissionFlg=false;
 	$permissions = $facebook->api("/{$snsId}/permissions", 'GET', array('access_token' => $token));
+	//旧仕様
 	$permissionFlg=array_key_exists('publish_actions', $permissions['data'][0]);
+
+	//新仕様(ver2.0)
+/*
+	foreach($permissions['data'] as $k=>$v){
+			$file->log("permArr:".$v["permission"]);//→publish_actions
+			if($v["permission"] == 'publish_actions'){
+				$permissionFlg = true;
+			}
+	}
+*/
 
 	//facebookに$appMessageを投稿
 	if($permissionFlg){
