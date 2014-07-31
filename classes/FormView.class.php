@@ -335,7 +335,9 @@ class FormView{
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
-					$html->find('input',0)->value = (!empty($enq['PROPS']['value'][0]))? $enq['PROPS']['value'][0] : "";
+					if($value == ""){//0716修正
+						$html->find('input',0)->value = (!empty($enq['PROPS']['value'][0]))? $enq['PROPS']['value'][0] : "";
+					}
 					$tag = $html->find('input',0);
 					break;
 				default:
