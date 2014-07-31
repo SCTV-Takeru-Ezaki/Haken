@@ -12,8 +12,17 @@ $imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップ�
 $appId='260632710756829';
 $secret='cee411eb24fd91e2110cc45a75695e04';
 
-$topPageURL="http://lunch.pitcom.jp/";
-$thumnailURL="http://lunch.pitcom.jp/img/fb.jpg";
+$subdomain = "lunch";
+$clientId = "lunch";
+$topPageURL="http://{$subdomain}.pitcom.jp/";
+$thumnailURL="http://{$subdomain}.pitcom.jp/form/img/fb200px.jpg";
+$appMessage = <<<TXT
+
+TXT;
+$appName = "アプリ名";
+$appDescription = <<<TXT
+説明文
+TXT;
 
 // appId と secret は「マイアプリ」のページで確認可
 // https://www.facebook.com/developers/apps.php
@@ -87,28 +96,28 @@ if($mode=='get'){
 	$permissionFlg=false;
 	$permissions = $facebook->api("/{$snsId}/permissions", 'GET', array('access_token' => $token));
 	//旧仕様
-	$permissionFlg=array_key_exists('publish_actions', $permissions['data'][0]);
+	//$permissionFlg=array_key_exists('publish_actions', $permissions['data'][0]);
 
 	//新仕様(ver2.0)
-/*
+
 	foreach($permissions['data'] as $k=>$v){
 			$file->log("permArr:".$v["permission"]);//→publish_actions
 			if($v["permission"] == 'publish_actions'){
 				$permissionFlg = true;
 			}
 	}
-*/
+
 
 	//facebookに$appMessageを投稿
 	if($permissionFlg){
 		$facebook->api(
 					"/{$snsId}/feed",'POST',
 					array(
-					'message' => '$appMessage',
+					'message' => $appMessage,
 					'link' => $topPageURL,
-					'name' => '$appName',
+					'name' => $appName,
 					'picture' =>$thumnailURL,
-					'description' =>'$appDescription',
+					'description' =>$appDescription,
 		));
 		echo "投稿完了";
 		exit;

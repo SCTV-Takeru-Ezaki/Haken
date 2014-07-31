@@ -218,8 +218,9 @@ $ms->logs("send mail $returnId $co $datetime");
 
 //各SNSのタイムラインへ投稿
 switch($postData['snsName']){
-	case 'facebook':
-		$url="https://lunch.pitcom.jp/haken/facebook.php";
+        $domain = $_SERVER['SERVER_NAME'];
+        case 'facebook':
+                $url="https://{$domain}/form/facebook.php";
 		$params = Array(
 			'mode'  => 'post',
 			'snsUid'  => $postData['snsUid'],
@@ -229,7 +230,7 @@ switch($postData['snsName']){
 		break;
 
 	case 'twitter':
-		$url="https://lunch.pitcom.jp/haken/tw_callback.php";
+		$url="https://{$domain}/form/tw_callback.php";
 		$params = Array(
 			'mode'  => 'post',
 			'snsUid'  => $postData['snsUid'],
