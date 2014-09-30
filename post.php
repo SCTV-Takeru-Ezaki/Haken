@@ -216,9 +216,9 @@ $datetime = date("Y-m-d H:i:s");
 $ms->logs("send mail $returnId $co $datetime");
 }
 
+$domain = $_SERVER['SERVER_NAME'];
 //各SNSのタイムラインへ投稿
 switch($postData['snsName']){
-        $domain = $_SERVER['SERVER_NAME'];
         case 'facebook':
                 $url="https://{$domain}/form/facebook.php";
 		$params = Array(
