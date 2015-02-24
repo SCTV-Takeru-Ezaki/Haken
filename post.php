@@ -39,7 +39,7 @@ define("REALTIME_FLAG", 0);
 $mailflg = 1;
 
 $formPath="/home/{$clientId}/public_html/form/";
-$path_to_json = $formPath."form/init/init.json";
+$path_to_json = $formPath."init/init.json";
 //---------------------------------------------------
 $file = &Log::factory('file', "/home/".$clientId."/log/out.log", 'POST.PHP');
 
@@ -58,7 +58,7 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 	$im = preg_replace("/data:[^,]+,/i","",$im);
 	$im = base64_decode($im);
 	$image = imagecreatefromstring($im);
-	imagepng($image ,$formPath."form/uploads/".md5(implode("\t",$_POST)).".png");
+	imagepng($image ,$formPath."uploads/".md5(implode("\t",$_POST)).".png");
 	$im = "uploads/".md5(implode("\t",$_POST)).".png";
 }
 $title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
@@ -131,7 +131,7 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = $formPath."form/".$im;
+$testPath = $formPath."".$im;
 $file->log($testPath);
 //im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
