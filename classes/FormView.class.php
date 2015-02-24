@@ -331,7 +331,7 @@ class FormView{
 				case 'HIDDEN':
 					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
-					$value = (!empty($enq['PROPS']['value']))? $enq['PROPS']['value'] : "";
+					// $value = (!empty($enq['PROPS']['value']))? $enq['PROPS']['value'] : "";
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);

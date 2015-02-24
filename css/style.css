@@ -92,3 +92,16 @@ label {
   padding: 10px;
   text-align: left;
 }
+#enquete5 {
+  /*折り返し0623追記*/
+  word-wrap:break-word;
+}
+
+/*規約テキストエリア0623追記*/
+#kiyaku{
+  width:100%;
+  height:14em;
+  color:#000;
+  overflow-x:hidden;
+  overflow-y:scroll;
+}

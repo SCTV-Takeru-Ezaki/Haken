@@ -1,6 +1,6 @@
 <?php
 //twitteroauth読み込み
-require_once('twitteroauth/twitteroauth.php');
+require_once('lib/twitteroauth.php');
 
 $snsName='twitter';//
 $mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
@@ -12,9 +12,9 @@ $imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップ�
 define('CONSUMER_KEY', 'RMXxP7kjXcy8MYQaDMSKQ');
 define('CONSUMER_SECRET', 'gcfYSar3d0hPHfJA571YuiZ2F09Gt3V34E0oGlFwY');
 if($mode=='get'){
-	define('CALLBACK_URL', 'http://lunch.pitcom.jp/haken/tw_callback.php?mode='.$mode.'&imgMode='.$imgMode);
+	define('CALLBACK_URL', 'http://'.$_SERVER['SERVER_NAME'].'/form/tw_callback.php?mode='.$mode.'&imgMode='.$imgMode);
 }else if($mode=='post'){
-	define('CALLBACK_URL', 'http://lunch.pitcom.jp/haken/tw_callback.php?mode='.$mode);
+	define('CALLBACK_URL', 'http://'.$_SERVER['SERVER_NAME'].'/form/tw_callback.php?mode='.$mode);
 }
 
 // request token取得

@@ -1,6 +1,6 @@
 <?php
 ini_set('display_errors',1);
-ini_set('error_reporting', E_ALL);
+ini_set('error_reporting', E_ALL & ~E_NOTICE);
 mb_language("uni");
 mb_internal_encoding("UTF-8");
 

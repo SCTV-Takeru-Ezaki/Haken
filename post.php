@@ -38,9 +38,10 @@ define("REALTIME_FLAG", 0);
 
 $mailflg = 1;
 
-$path_to_json = "/home/".$clientId."/public_html/form/init/init.json";
+$formPath="/home/{$clientId}/public_html/form/";
+$path_to_json = $formPath."form/init/init.json";
 //---------------------------------------------------
-$file = &Log::factory('file', './log/out.log', 'POST.PHP');
+$file = &Log::factory('file', "/home/".$clientId."/log/out.log", 'POST.PHP');
 
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
@@ -57,7 +58,7 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 	$im = preg_replace("/data:[^,]+,/i","",$im);
 	$im = base64_decode($im);
 	$image = imagecreatefromstring($im);
-	imagepng($image ,"/home/".$clientId."/public_html/form/uploads/".md5(implode("\t",$_POST)).".png");
+	imagepng($image ,$formPath."form/uploads/".md5(implode("\t",$_POST)).".png");
 	$im = "uploads/".md5(implode("\t",$_POST)).".png";
 }
 $title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
@@ -130,8 +131,8 @@ if(REALTIME_FLAG){
 }
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
-$testPath = "/home/".$clientId."/public_html/form/".$im;
-$file->log("/home/".$clientId."/public_html/form/".$im);
+$testPath = $formPath."form/".$im;
+$file->log($testPath);
 //im $testPath;
 $toPath = ORIG_DIR_PATH."/{$fileName}";
 $file->log("to path:{$toPath}");

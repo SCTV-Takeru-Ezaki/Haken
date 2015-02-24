@@ -1,6 +1,8 @@
 <?php
 //twitteroauth読み込み
-require_once('twitteroauth/twitteroauth.php');
+require_once('lib/twitteroauth.php');
+require_once("../pitadmin/current.php"); // pitadminディレクトリ直下にあるcurrent.phpを指定
+require_once(BASE_URI."/common/common.php");
 
 $snsName='twitter';
 $mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
@@ -14,7 +16,7 @@ define('CONSUMER_KEY', 'RMXxP7kjXcy8MYQaDMSKQ');
 define('CONSUMER_SECRET', 'gcfYSar3d0hPHfJA571YuiZ2F09Gt3V34E0oGlFwY');
 
 $appMessage='ランチなう！メッセージをtwitterへ投稿。IDは'.$id.'です。';
-$topPageURL='http://lunch.pitcom.jp/';
+$topPageURL='http://'.$_SERVER['SERVER_NAME'];
 
 // access token 取得
 session_start();
@@ -42,7 +44,8 @@ if($mode=='get'){
 		//ユーザーアイコンURL取得
 		$show = json_decode($show,true);
 		$imgUrl = $show["profile_image_url_https"];//or $show['profile_image_url']
-		$path = "/home/lunch/public_html/haken/";
+		$clientId=CLIENT_ID;
+		$path = "/home/{$clientId}/public_html/form/";
 		$dir = "uploads";
 		$image = file_get_contents($imgUrl);
 
@@ -71,7 +74,7 @@ if($mode=='get'){
 	//$connect->format = "json";
 
 	$twMessage = $appMessage."\n".$topPageURL;
-	$api_url = "http://api.twitter.com/1.1/statuses/update.json";
+	$api_url = "https://api.twitter.com/1.1/statuses/update.json";
 	$method = "POST";
 	$req = $connect->OAuthRequest($api_url,$method,array("status"=>$twMessage));
 
