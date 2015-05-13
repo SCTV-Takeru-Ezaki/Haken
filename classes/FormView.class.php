@@ -142,6 +142,7 @@ class FormView{
 				case 'RADIO':
 				case 'AGREE':
 				case 'HIDDEN':
+				case 'AUTOCOMP':
 					$label = (!empty($this->model->postData[$enq['NAME']]))? $this->model->getPostedLabelFromKey($enq['NAME'],$this->model->postData[$enq['NAME']]):'';
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
@@ -258,7 +259,7 @@ class FormView{
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
 					$k=0;
-					$tag = "<select name=\"{$enq['NAME']}\">\n";
+					$tag = "<select name=\"{$enq['NAME']}\" >\n";//jquery
 					foreach($html->find('option') as $el){
 						if($this->model->getPostedValueFromKey($enq['NAME']) == $enq['PROPS']['value'][$k]){
 							$el->selected = true;
@@ -314,7 +315,7 @@ class FormView{
 				case 'AGREE':
 					//HTMLを生成
 					$style = $this->createStyle();
-					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"1\"> ";
+					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$enq['PROPS']['value'][0]}\"> ";
 
 					//入力済み項目を反映させる
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
@@ -339,6 +340,27 @@ class FormView{
 						$html->find('input',0)->value = (!empty($enq['PROPS']['value'][0]))? $enq['PROPS']['value'][0] : "";
 					}
 					$tag = $html->find('input',0);
+					break;
+				case 'AUTOCOMP':
+					//HTMLを生成
+					foreach($enq['PROPS']['label'] as $k =>  $v){
+						$style = $this->createStyle();
+						$tag .= "<option value=\"{$enq['PROPS']['value'][$k]}\">{$v}</option>\n";
+					}
+					
+					//入力済み項目を反映させる
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
+					$tag="";
+					$k=0;
+					$tag = "<select name=\"{$enq['NAME']}\" id=\"combobox\">\n";//jquery
+					foreach($html->find('option') as $el){
+						if($this->model->getPostedValueFromKey($enq['NAME']) == $enq['PROPS']['value'][$k]){
+							$el->selected = true;
+						}
+						$tag .= $el."\n";
+						$k++;
+					}
+					$tag .= "</select>\n";
 					break;
 				default:
 					break;
