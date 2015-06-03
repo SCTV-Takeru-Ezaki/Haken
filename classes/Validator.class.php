@@ -79,4 +79,15 @@ class Validator{
 			return 1;
 		}
 	}
+	// 半角数字かつ6桁以外でエラーメッセージ表示
+	private function isntNUM6($value = ''){
+		$name = __FUNCTION__;
+		// $key = substr($name,2,strlen($name)-1);
+
+		if(preg_match("/^[0-9]+$/",$value) && strlen($value)==6 || strlen($value)==0){
+			return 0;
+		}else{
+			return 1;
+		}
+	}	
 }

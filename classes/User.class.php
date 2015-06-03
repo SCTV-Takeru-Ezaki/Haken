@@ -83,9 +83,24 @@ class User{
 				$v = strtolower($v);
 				if(preg_match("/{$v}/",$mimeType)){
 					$ext = $v;
-					$tmp = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp.{$v}";
+					$tmpName = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp";
+					// $tmp = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp.{$v}";
+					$tmp = $tmpName.".{$v}";
 					$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".{$v}";
 					@move_uploaded_file($files["image"]["tmp_name"], $tmp)?$tmp:false;
+					// 動画GIF対応(↑$tmpName追加,$tmp修正)
+					$image = new Imagick();
+					$image->readImage($tmp);
+					$fNum = $image->getNumberImages();
+					if($fNum > 2){
+						$image->writeImages($tmp,false);
+						$image->readImage($tmpName."-0.".$v);
+						$image->writeImage($tmp);
+						$image->clear();
+						$delImagePath = "{$tmpName}-*.{$v}";
+						system("rm -rf $delImagePath");
+					}//動画GIF対応
+
 					$this->orientationFixedImage($new,$tmp);
 					return $new;
 					break;
