@@ -1,6 +1,7 @@
 <?php
 //FacebookSDKを読み込む
 require_once("./lib/facebook.php");
+require_once("common.php");
 
 $snsName='facebook';
 $mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
@@ -8,9 +9,6 @@ $snsId=empty($_REQUEST['snsUid'])? '':$_REQUEST['snsUid'];
 $token=empty($_REQUEST['tokenSecret'])? '':$_REQUEST['tokenSecret'];
 $id = empty($_REQUEST['id'])? '':$_REQUEST['id'];
 $imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップロード or プロフ画像
-
-$appId='260632710756829';
-$secret='cee411eb24fd91e2110cc45a75695e04';
 
 $subdomain = "lunch";
 $clientId = "lunch";
@@ -27,8 +25,8 @@ TXT;
 // appId と secret は「マイアプリ」のページで確認可
 // https://www.facebook.com/developers/apps.php
 $facebook = new Facebook(array(
-	'appId' => $appId,
-	'secret' => $secret,
+	'appId' => FB_APPID,
+	'secret' => FB_SECRET,
 ));
 
 if($mode=='get'){

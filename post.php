@@ -39,6 +39,7 @@ define("REALTIME_FLAG", 0);
 $mailflg = 1;
 
 $formPath="/home/{$clientId}/public_html/form/";
+// $formPath="/home/pit/public_html/client/{$clientId}/form/";
 $path_to_json = $formPath."init/init.json";
 //---------------------------------------------------
 $file = &Log::factory('file', "/home/".$clientId."/log/out.log", 'POST.PHP');
