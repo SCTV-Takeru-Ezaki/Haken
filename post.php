@@ -20,8 +20,6 @@ require_once(BASE_URI."/lib/PPM/Api.php");
 require_once("XML/Serializer.php");
 require_once("XML/Unserializer.php");
 require_once 'Log.php';
-//画像合成クラス
-//require_once(BASE_URI."/lib/PPM/ImageAnnotate.php");
 
 $clientId = CLIENT_ID;
 if(empty($clientId)){
@@ -29,7 +27,6 @@ if(empty($clientId)){
 	$retJson = json_encode($retData);
 	echo $retJson;
 	exit;
-
 }
 
 //------------------設定項目-------------------------
@@ -46,6 +43,13 @@ $file = &Log::factory('file', "/home/".$clientId."/log/out.log", 'POST.PHP');
 
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
+	$retJson = json_encode($retData);
+	echo $retJson;
+	exit;
+}
+// 1投稿2POST現象対策(これによりIDを00001からスタート可)
+if(empty($_POST)){
+	$retData = array("error" =>"送信できませんでした。投稿データがありません。");
 	$retJson = json_encode($retData);
 	echo $retJson;
 	exit;

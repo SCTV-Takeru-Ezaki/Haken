@@ -99,7 +99,7 @@ if($mode=='get'){
 	//新仕様(ver2.0)
 
 	foreach($permissions['data'] as $k=>$v){
-			$file->log("permArr:".$v["permission"]);//→publish_actions
+			// $file->log("permArr:".$v["permission"]);//→publish_actions
 			if($v["permission"] == 'publish_actions'){
 				$permissionFlg = true;
 			}
