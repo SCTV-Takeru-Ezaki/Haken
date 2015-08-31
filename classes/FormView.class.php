@@ -136,7 +136,7 @@ class FormView{
 						}
 						$label = rtrim($label, ",");
 					}
-					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
+					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span><input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 				case 'SELECT':
 				case 'RADIO':
