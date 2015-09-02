@@ -29,6 +29,11 @@ $facebook = new Facebook(array(
 	'secret' => FB_SECRET,
 ));
 
+if(empty($_REQUEST['mode']) || $_REQUEST['mode']==null){
+	header("Location:facebook.php?mode=get");
+	exit;
+}
+
 if($mode=='get'){
 	//ログイン状態を取得
 	$userObj = $facebook->getUser();

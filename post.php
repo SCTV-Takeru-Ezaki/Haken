@@ -232,7 +232,10 @@ switch($postData['snsName']){
 			'snsUid'  => $postData['snsUid'],
 			'tokenSecret'  => $postData['tokenSecret']
 		);
-		sendPostQuery($url,$params);
+		// 「シェアする」へチェックあるときのみPOST、アンケート番号は適宜
+		if($postData["enquete6"]=="1"){
+			sendPostQuery($url,$params);
+		}
 		break;
 
 	case 'twitter':
@@ -257,24 +260,31 @@ echo $retJson;
 
 //FormViewクラスの関数(簡易版)
 function sendPostQuery($url,$params = array()){
-	$method = 'POST';
+	$method = "POST";
 	$data = http_build_query($params);
 
-	$options = array('http' => Array(
-		'method' => $method,
+	$header = array(
+        "Content-Type: application/x-www-form-urlencoded",
+        "Content-Length: ".strlen($data),
+        "Authorization: Basic ".base64_encode("pmt:7310")
+    );
+
+	$options = array("http" => Array(
+		"method" => $method,
+		"header" => implode("\r\n", $header)
 	));
 
 	// ステータスをチェック / PHP5専用 get_headers()
 	$respons = get_headers($url);
-	if(preg_match("/(404|403|500)/",$respons['0'])){
+	if(preg_match("/(404|403|500)/",$respons["0"])){
 		return false;
 		exit;
 	}
 
-	if($method == 'GET') {
-		$url = ($data != '') ? $url.'?'.$data:$url;
-	}else if($method == 'POST') {
-		$options['http']['content'] = $data;
+	if($method == "GET") {
+		$url = ($data != "") ? $url."?".$data:$url;
+	}else if($method == "POST") {
+		$options["http"]["content"] = $data;
 	}
 	$content = file_get_contents($url, false, stream_context_create($options));
 	return $content;

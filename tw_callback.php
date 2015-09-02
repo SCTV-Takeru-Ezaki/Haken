@@ -47,9 +47,7 @@ if($mode=='get'){
 	if($imgMode == 'icon'){
 		// 新TwitterOAuth用
 		$show = $connect->get("users/show",array("screen_name"=>$screen_name));
-		$show = json_decode($show,true);
-		//@todo　ファイル名から「_normal」を除いてオリジナルサイズを取得する。
-		$imgUrl = $show["profile_image_url_https"];//or $show['profile_image_url']
+		$imgUrl = $show->profile_image_url_https;
 		$imgUrl = preg_replace("/_normal/","",$imgUrl);
 		$path = "/home/lunch/public_html/haken_test/";
 		$dir = "uploads";
