@@ -18,7 +18,7 @@ $imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップ�
 $appMessage='『ランチなう!!フォトモザイクアート』に参加しました。#Lunchnow IDは'.$id.'です。';
 $topPageURL='http://lunch.pitcom.jp/';
 
-$file = &Log::factory('file', "/home/lunch/public_html/haken_test/log/out.log", 'TW_CALLBACK.PHP');
+$file = &Log::factory('file', "/home/lunch/public_html/form/log/out.log", 'TW_CALLBACK.PHP');
 
 $oauth_token = $_SESSION['oauth_token'];
 $oauth_token_secret = $_SESSION['oauth_token_secret'];
@@ -49,7 +49,7 @@ if($mode=='get'){
 		$show = $connect->get("users/show",array("screen_name"=>$screen_name));
 		$imgUrl = $show->profile_image_url_https;
 		$imgUrl = preg_replace("/_normal/","",$imgUrl);
-		$path = "/home/lunch/public_html/haken_test/";
+		$path = "/home/lunch/public_html/form/";
 		$dir = "uploads";
 		$image = file_get_contents($imgUrl);
 

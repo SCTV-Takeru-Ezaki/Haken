@@ -41,7 +41,7 @@ if($mode=='get'){
 	if($userObj) {
 		//ログインしている場合
 		try{
-			$user_profile = $facebook->api('/me','GET');
+			$user_profile = $facebook->api('/me?fields=email,id,name','GET');
 			$access_token = $facebook->getAccessToken();
 			// var_dump($user_profile);
 

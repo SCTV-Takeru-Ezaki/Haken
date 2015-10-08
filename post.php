@@ -69,8 +69,7 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 $title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
 $body = $postData["enquete5"];//$postData["enquete5"];
 
-//echo mb_convert_encoding($title, "UTF-8");
-//echo mb_convert_encoding($body, "UTF-8");
+$postData["enquete2"] = !empty($postData["snsName"])?$postData["snsName"]:$postData["enquete2"];
 
 if(REALTIME_FLAG){
     //$status = IMAGE_PUBLIC;
