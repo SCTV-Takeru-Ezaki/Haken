@@ -198,8 +198,39 @@ if(REALTIME_FLAG){
 	$options = array(
 		XML_UNSERIALIZER_OPTION_ATTRIBUTES_PARSE => 'parseAttributes'
 	);
-
 	$unserializer = new XML_Unserializer($options);
+
+	// 上書き設定チェック
+	if(REGIST_FLAG == 1){
+		$bool = $ppmExec->chkFullImage($db); // 採用画像が全て埋まっているかどうかチェック
+		/****
+		* 全て埋まっている場合
+		* ・一番古い採用画像を取得
+		* ・ステータスをOLD_PUBLIC(上書き済み)に変更
+		* ・APIから削除
+		* ・新しいデータを登録
+		* の作業を行う。
+		* XMLはnumを空白にする以外は同じ。
+		****/
+		if($bool == 1){
+			// 最も古い採用画像IDを取得
+			$oldestMid = $ppmExec->getOldestImageMid($db);
+			// APIに投げて画像データ削除
+			// 管理画面側の採用データ情報は消さない
+			$oldestFlg = 1;
+			$oldestImgName = "{$oldestMid}.jpg";
+			$ppmExec->execDeleteStatusAndImage($db, $oldestMid, $oldestImgName, $unserializer, $oldestFlg);
+			// ステータスを上書き済みに変更
+			$res = $ppmExec->execSetStatus($db, $oldestMid, OLD_PUBLIC);
+			if(!$res){
+				$error = $ppmExec->vdump($res);
+				echo $error;
+				$db->rollback();
+				exit;
+			}
+		}
+	}
+
 	// 登録
 	$ppmExec->execPublicImage($db, $mid, $fileName, $unserializer);
 
