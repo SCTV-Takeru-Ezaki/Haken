@@ -1,6 +1,12 @@
 body{
   background-color:#8a2323;
 }
+
+html, button, input, select, textarea, span,
+.pure-g [class *= "pure-u"] {
+  /* フォント変更する場合は上記purecssのセレクタ指定*/
+  /*font-family: "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ","Meiryo",serif;*/
+}
 #bg {
   background-color:#FFFFFF;
   max-width:768px;

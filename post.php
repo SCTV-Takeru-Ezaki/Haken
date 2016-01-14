@@ -35,11 +35,11 @@ define("REALTIME_FLAG", 0);
 
 $mailflg = 1;
 
-$formPath="/home/{$clientId}/public_html/form/";
-// $formPath="/home/pit/public_html/client/{$clientId}/form/";
+$formPath="/home/pituser/public_html/form/";
+// $formPath="/home/pituser/public_html/client/{$clientId}/form/";
 $path_to_json = $formPath."init/init.json";
 //---------------------------------------------------
-$file = &Log::factory('file', "/home/".$clientId."/log/out.log", 'POST.PHP');
+$file = &Log::factory('file', "/home/pituser/log/out.log", 'POST.PHP');
 
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
@@ -72,8 +72,8 @@ $body = $postData["enquete5"];//$postData["enquete5"];
 $postData["enquete2"] = !empty($postData["snsName"])?$postData["snsName"]:$postData["enquete2"];
 
 if(REALTIME_FLAG){
-    //$status = IMAGE_PUBLIC;
-    $status = HEAP_PUBLIC;
+    $status = IMAGE_PUBLIC;
+    // $status = HEAP_PUBLIC;
 }else{
     $status = UNCHECKED;
 }
@@ -84,7 +84,7 @@ $jsondata = json_decode($htb,true);
 
 //返信メール
 if($mailflg){
-define("CURRENT_MAIL_DIR", "/home/".$clientId."/msave");
+define("CURRENT_MAIL_DIR", "/home/pituser/msave");
 require_once(CURRENT_MAIL_DIR."/common/common_msg.php");
 require_once(CURRENT_MAIL_DIR."/lib/MailSave.php");
 $ms = new MailSave();
@@ -153,46 +153,6 @@ if(!$bool){
 	exit;
 }
 
-// 基本データ登録用に配列に入れる
-$arrPostData = array(
-	"id" => $newId,
-	"client_id" => CLIENT_ID,
-	"mid" => $mid,
-	"status" => $status,
-	"mail_from" => $EMAIL,
-	"title" => $title,
-	"body" => $body,
-	"img_name" => "{$mid}.jpg",
-);
-
-// DBに基本データを登録
-// 基本的にtbl_dataテーブルは固定でカスタマイズしない。
-// 登録できる内容は$arrPostDataにあるとおり。
-// id, clientid, mid, statusは必須。
-// 画像が存在しない場合は、img_nameを空白にしてstatusをNOIMAGEにする。
-// statusの各値はcommon.phpのステータスを参照
-$imPost->setTblData($db, $arrPostData); 
-
-// DBにオプションデータを登録
-// enq_dataテーブルに登録するための関数。
-// 最初に管理画面のオプションのアンケート追加にて項目を追加。
-// そこで追加した項目の数字がenq_numの値となる。
-
-foreach($jsondata['enqueteList'] as $k=>$v){
-	$enq_num = mb_ereg_replace('[^0-9]', '', $v["NAME"]);
-	$enq_text_key = $v["NAME"];
-	
-	$arrData = array(
-		"client_id" => CLIENT_ID,
-		"data_id" => $mid,
-		"enq_num" => $enq_num,
-		"enq_text" => $postData[$enq_text_key]
-	);
-	if($enq_num){
-		$imPost->setOptData($db, $arrData);
-	}
-}
-
 //事後チェック２
 if(REALTIME_FLAG){
 	$options = array(
@@ -237,6 +197,47 @@ if(REALTIME_FLAG){
 	flock($fp, LOCK_UN); // ロックの破棄
 	fclose($fp);
 }
+
+// 基本データ登録用に配列に入れる
+$arrPostData = array(
+	"id" => $newId,
+	"client_id" => CLIENT_ID,
+	"mid" => $mid,
+	"status" => $status,
+	"mail_from" => $EMAIL,
+	"title" => $title,
+	"body" => $body,
+	"img_name" => "{$mid}.jpg",
+);
+
+// DBに基本データを登録
+// 基本的にtbl_dataテーブルは固定でカスタマイズしない。
+// 登録できる内容は$arrPostDataにあるとおり。
+// id, clientid, mid, statusは必須。
+// 画像が存在しない場合は、img_nameを空白にしてstatusをNOIMAGEにする。
+// statusの各値はcommon.phpのステータスを参照
+$imPost->setTblData($db, $arrPostData); 
+
+// DBにオプションデータを登録
+// enq_dataテーブルに登録するための関数。
+// 最初に管理画面のオプションのアンケート追加にて項目を追加。
+// そこで追加した項目の数字がenq_numの値となる。
+
+foreach($jsondata['enqueteList'] as $k=>$v){
+	$enq_num = mb_ereg_replace('[^0-9]', '', $v["NAME"]);
+	$enq_text_key = $v["NAME"];
+	
+	$arrData = array(
+		"client_id" => CLIENT_ID,
+		"data_id" => $mid,
+		"enq_num" => $enq_num,
+		"enq_text" => $postData[$enq_text_key]
+	);
+	if($enq_num){
+		$imPost->setOptData($db, $arrData);
+	}
+}
+
 
 // Flash用XML作成
 $ppmExec->createXmlData($db);

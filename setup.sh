@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#ファイルlog/out.logの有無で実行済みか判定
 if [ ! -e log/out.log ]
 	then
 		echo "setup.sh実行済みです。"
