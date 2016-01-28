@@ -15,10 +15,7 @@ $tokenSecret=empty($_REQUEST['tokenSecret'])? '':$_REQUEST['tokenSecret'];
 $id = empty($_REQUEST['id'])? '':$_REQUEST['id'];
 $imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップロード or プロフ画像
 
-$appMessage='『ランチなう!!フォトモザイクアート』に参加しました。#Lunchnow IDは'.$id.'です。';
-$topPageURL='http://lunch.pitcom.jp/';
-
-$file = &Log::factory('file', "/home/lunch/public_html/form/log/out.log", 'TW_CALLBACK.PHP');
+$file = &Log::factory('file', "/home/pituser/log/out.log", 'TW_CALLBACK.PHP');
 
 $oauth_token = $_SESSION['oauth_token'];
 $oauth_token_secret = $_SESSION['oauth_token_secret'];
@@ -85,7 +82,7 @@ if($mode=='get'){
 	$mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
 	$file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
 	$params = array(
-		"status"=>$appMessage."\n".$topPageURL,
+		"status"=>SHARE_MSG." IDは0{$id}です。\n".SHARE_URL,
 		"media_ids"=>$mediaId->media_id_string
 	);
 

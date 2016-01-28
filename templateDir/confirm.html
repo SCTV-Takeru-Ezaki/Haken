@@ -12,7 +12,18 @@
 <!--[if lte IE 9]>
 <link href="css/ie9.css" rel="stylesheet" media="screen" />
 <![endif]-->
-
+<script type="text/javascript" src="lib/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+$(function(){
+  // 投稿ボタン連打防止
+  $("#submit,#edit").show();
+  $("#loading").hide();
+  $("#submit").click(function(){
+    $("#submit,#edit").hide();
+    $("#loading").html("送信中<img src=\"img/loading.gif\" />").show();
+  });
+});
+</script>
 </head>
 
 <body>

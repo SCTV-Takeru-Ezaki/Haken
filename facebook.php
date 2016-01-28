@@ -10,18 +10,6 @@ $token=empty($_REQUEST['tokenSecret'])? '':$_REQUEST['tokenSecret'];
 $id = empty($_REQUEST['id'])? '':$_REQUEST['id'];
 $imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップロード or プロフ画像
 
-$subdomain = "lunch";
-$clientId = "lunch";
-$topPageURL="http://{$subdomain}.pitcom.jp/";
-$thumnailURL="http://{$subdomain}.pitcom.jp/form/img/fb200px.jpg";
-$appMessage = <<<TXT
-
-TXT;
-$appName = "アプリ名";
-$appDescription = <<<TXT
-説明文
-TXT;
-
 // appId と secret は「マイアプリ」のページで確認可
 // https://www.facebook.com/developers/apps.php
 $facebook = new Facebook(array(
@@ -116,11 +104,11 @@ if($mode=='get'){
 		$facebook->api(
 					"/{$snsId}/feed",'POST',
 					array(
-					'message' => $appMessage,
-					'link' => $topPageURL,
-					'name' => $appName,
-					'picture' =>$thumnailURL,
-					'description' =>$appDescription,
+					'message' => '',
+					'link' => FB_LINK,
+					'name' => FB_APPNAME,
+					'picture' =>FB_SHAREIMAGE,
+					'description' =>FB_APPDESCRIPTION,
 		));
 		echo "投稿完了";
 		exit;
