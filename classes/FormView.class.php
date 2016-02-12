@@ -154,9 +154,12 @@ class FormView{
 					$tag = "<span id=\"{$enq['NAME']}Confirm\">{$label}</span>　<input type=\"hidden\" name=\"{$enq['NAME']}\" value=\"{$value}\">";
 					break;
 			}
-
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
-			$el->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span>".$tag;
+			$el->innertext = $tag;			
+			if(!empty($enq['TITLE'])){
+				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
+				$el2->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span>";
+			}
 		}
 
 		$this->publish();
@@ -366,8 +369,16 @@ class FormView{
 					break;
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
+			$el->innertext = $tag;
+			if(!empty($enq['TITLE'])){
+				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
+				$el2->innertext = "<span class=\"itemTitle\">$str{$enq['TITLE']}</span> ";
+			}
 			$em = ($this->model->postData['page'] != 'input')?$this->getErrorMessage($enq):'';
-			$el->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span> ".$tag."<span class=\"itemError\">{$em}</span>";
+			if(!empty($em)){
+				$eh = $this->templateHtml->find("span#{$enq['NAME']}error",0);
+				$eh->innertext = "<span class=\"itemError\">{$em}</span>";
+			}
 		}
 		$this->publish();
 		if(!empty($html)){

@@ -30,15 +30,13 @@ if(empty($clientId)){
 }
 
 //------------------設定項目-------------------------
-// リアルタイムフラグ チェックDEL時：1,チェックUP：0
-define("REALTIME_FLAG", 0);
-
-$mailflg = 1;
-
-$formPath="/home/pituser/public_html/form/";
+define("REALTIME_FLAG", 0);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
+$mailflg = 1;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
+$formPath="/home/pituser/public_html/form/";//form設置先のパス
 // $formPath="/home/pituser/public_html/client/{$clientId}/form/";
-$path_to_json = $formPath."init/init.json";
 //---------------------------------------------------
+
+$path_to_json = $formPath."init/init.json";
 $file = &Log::factory('file', "/home/pituser/log/out.log", 'POST.PHP');
 
 if(duplicateChk()){
