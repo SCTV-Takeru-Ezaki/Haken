@@ -295,7 +295,7 @@ function sendPostQuery($url,$params = array()){
 	$header = array(
         "Content-Type: application/x-www-form-urlencoded",
         "Content-Length: ".strlen($data),
-        "Authorization: Basic ".base64_encode("pmt:7310")
+        "Authorization: Basic ".base64_encode("pmt:1123")
     );
 
 	$options = array("http" => Array(
