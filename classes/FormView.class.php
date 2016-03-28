@@ -208,7 +208,7 @@ class FormView{
 					//HTMLを生成
 					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
-					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\" maxlength=\"{$enq['PROPS']['maxlength']}\" autocapitalize=\"off\">\n";
+					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\" maxlength=\"{$enq['PROPS']['maxlength']}\" autocapitalize=\"off\" onKeyPress=\"return submitStop(event);\">\n";
 
 					//入力済み項目を反映させる
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
