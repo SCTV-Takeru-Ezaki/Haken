@@ -37,8 +37,6 @@ class FormView{
 		}
 	}
 	private function createPostView(){
-		//print_r($this->model->postData);
-		//$post = $this->model->postData;
 		$this->model->postData = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($this->model->postData))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
 		if(empty($_SERVER['HTTP_REFERER'])){
 			header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
@@ -91,27 +89,6 @@ class FormView{
 
 	private function createConfirmView(){
 		$this->checkWrongAccess();
-	    /*
-	    if (
-	        !isset($_FILES['image']['error']) ||
-	        is_array($_FILES['image']['error'])
-	    ) {
-	        throw new RuntimeException('Invalid parameters.');
-	    }
-
-	    // Check $_FILES['image']['error'] value.
-	    switch ($_FILES['image']['error']) {
-	        case UPLOAD_ERR_OK:
-	            break;
-	        case UPLOAD_ERR_NO_FILE:
-	            throw new RuntimeException('No file sent.');
-	        case UPLOAD_ERR_INI_SIZE:
-	        case UPLOAD_ERR_FORM_SIZE:
-	            throw new RuntimeException('Exceeded filesize limit.');
-	        default:
-	            throw new RuntimeException('Unknown errors.');
-	    }
-	    */
 
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			foreach($enq['ERROR_CHECK'] as $error => $value){
@@ -335,7 +312,6 @@ class FormView{
 				case 'HIDDEN':
 					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
-					// $value = (!empty($enq['PROPS']['value']))? $enq['PROPS']['value'] : "";
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$html->find('input',0)->value = $this->model->getPostedValueFromKey($enq['NAME']);
@@ -399,10 +375,6 @@ class FormView{
 		}
 	}
 
-	private function createStyle(){
-
-	}
-
 	private function checkWrongAccess(){
 		if(empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
 	}
@@ -432,11 +404,7 @@ class FormView{
 		}
 		$this->templateHtml->find("meta[name=viewport]",0)->content = $vp;
 
-		//CSSをロード(現時点では共通)
-		//$this->templateHtml = str_get_html($this->templateHtml);
-
 		if(Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE'])){
-			//$this->templateHtml->find('meta[http-equiv*=Content-type]',0)->content = 'text/html; charset=shift_jis';
 			$this->templateHtml->find('head',0)->innertext = $this->templateHtml->find('head',0)->innertext.'<meta http-equiv="Content-Type" content="text/html; charset=shift_jis" />';
 			//ヘッダー出力 au対策
 			header("Content-Type: text/html; charset=shift_jis");

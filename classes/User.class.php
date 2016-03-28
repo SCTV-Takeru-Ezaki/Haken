@@ -38,11 +38,11 @@ class User{
 				if(empty($this->model->postData[$key])) $this->model->postData[$key] = $value;
 			}
 		}
+
 		//ステータスにあわせた」画像データを格納
 		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
 		$this->model->postData['image'] = $this->setUploadFile($files);
 
-		//print_r($this->model->postData);
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
@@ -51,6 +51,7 @@ class User{
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
 			}
 		}
+		
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function setUploadFile($files){
