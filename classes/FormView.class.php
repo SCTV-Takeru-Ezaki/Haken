@@ -231,7 +231,7 @@ class FormView{
 					//HTMLを生成
 					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
-					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\" maxlength=\"{$enq['PROPS']['maxlength']}\">\n";
+					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\" maxlength=\"{$enq['PROPS']['maxlength']}\" autocapitalize=\"off\">\n";
 
 					//入力済み項目を反映させる
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
@@ -243,7 +243,7 @@ class FormView{
 					//HTMLを生成
 					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
-					$tag = "<textarea name=\"{$enq['NAME']}\" maxlength=\"{$enq['PROPS']['maxlength']}\" onkeypress=\"return (this.value.length < {$enq['PROPS']['maxlength']})\">{$value}</textarea>\n";
+					$tag = "<textarea name=\"{$enq['NAME']}\" maxlength=\"{$enq['PROPS']['maxlength']}\" onkeypress=\"return (this.value.length < {$enq['PROPS']['maxlength']})\" autocapitalize=\"off\">{$value}</textarea>\n";
 
 					//入力済み項目を反映させる
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
