@@ -47,6 +47,7 @@
             "TITLE": "メールアドレス(必須)",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
+                "AUTO_CONVERT":true,
                 "REQUIRE": 0,
                 "EMAIL":0
                 },

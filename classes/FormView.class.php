@@ -188,7 +188,6 @@ class FormView{
 			$tag = "";
 			switch($enq['TYPE']){
 				case 'FILE':
-					$style = $this->createStyle();
 					$exts = "";
 					foreach($this->model->init['allowExtensions'] as $ext){
 						$exts.="image/{$ext},";
@@ -206,7 +205,6 @@ class FormView{
 					break;
 				case 'TEXT':
 					//HTMLを生成
-					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\" maxlength=\"{$enq['PROPS']['maxlength']}\" autocapitalize=\"off\" onKeyPress=\"return submitStop(event);\">\n";
 
@@ -218,7 +216,6 @@ class FormView{
 					break;
 				case 'TEXTAREA':
 					//HTMLを生成
-					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
 					$tag = "<textarea name=\"{$enq['NAME']}\" maxlength=\"{$enq['PROPS']['maxlength']}\" onkeypress=\"return (this.value.length < {$enq['PROPS']['maxlength']})\" autocapitalize=\"off\">{$value}</textarea>\n";
 
@@ -231,7 +228,6 @@ class FormView{
 				case 'SELECT':
 					//HTMLを生成
 					foreach($enq['PROPS']['label'] as $k =>  $v){
-						$style = $this->createStyle();
 						$tag .= "<option value=\"{$enq['PROPS']['value'][$k]}\">{$v}</option>\n";
 					}
 					
@@ -252,7 +248,6 @@ class FormView{
 				case 'RADIO':
 					//HTMLを生成
 					foreach($enq['PROPS']['label'] as $k =>  $v){
-						$style = $this->createStyle();
 						$tag .= "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" value=\"{$enq['PROPS']['value'][$k]}\" style=\"{$style}\">";
 					}
 
@@ -272,7 +267,6 @@ class FormView{
 				case 'CHECKBOX':
 					//HTMLを生成
 					foreach($enq['PROPS']['label'] as $k =>  $v){
-						$style = $this->createStyle();
 						$tag .= "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}[]\" value=\"{$enq['PROPS']['value'][$k]}\" style=\"{$style}\">";
 					}
 
@@ -294,7 +288,6 @@ class FormView{
 					break;
 				case 'AGREE':
 					//HTMLを生成
-					$style = $this->createStyle();
 					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$enq['PROPS']['value'][0]}\"> ";
 
 					//入力済み項目を反映させる
@@ -310,7 +303,6 @@ class FormView{
 					}
 					break;
 				case 'HIDDEN':
-					$style = $this->createStyle();
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
@@ -323,7 +315,6 @@ class FormView{
 				case 'AUTOCOMP':
 					//HTMLを生成
 					foreach($enq['PROPS']['label'] as $k =>  $v){
-						$style = $this->createStyle();
 						$tag .= "<option value=\"{$enq['PROPS']['value'][$k]}\">{$v}</option>\n";
 					}
 					

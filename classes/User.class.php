@@ -43,11 +43,13 @@ class User{
 		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
 		$this->model->postData['image'] = $this->setUploadFile($files);
 
+		//バリデータチェック 各全半角の自動コンバートは
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			$name = $enq['NAME'];
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
+				//ポストデータからチェックする値を抽出
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
-				$checker = new Validator($key,$value,$this->model);
+				$checker = new Validator($key,$value,$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
 			}
 		}

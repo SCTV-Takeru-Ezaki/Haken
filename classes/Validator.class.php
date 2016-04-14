@@ -5,9 +5,12 @@ class Validator{
 	var $value;
 	var $model;
 
-	public function __construct($method,$value = '',$model){
+	var $auto_convert;
+
+	public function __construct($method,$value = '',$model,$auto_convert = false){
 		$this->method = $method;
 		$this->value = $value;
+		$this->auto_convert = $auto_convert;
 
 		$this->model = $model;
 	}
@@ -15,6 +18,7 @@ class Validator{
 		$method = 'isnt'.$this->method;
 		return $this->$method($this->value);
 	}
+
 	private function isntREQUIRE($value = ''){
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
@@ -29,11 +33,8 @@ class Validator{
 		$result = 1;
 		if(!empty($value)){
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
-			//$value = (Utility::isUrlEncoded($value))? urldecode($value) : $value;
 			$mimeType = strtolower(finfo_file($finfo, $value));
 			finfo_close($finfo);
-			// $file = &Log::factory('file', './log/out.log', 'Validator.PHP');
-			// $file->log("File type:{$mimeType}");
 
 			$result = 1;
 			foreach($this->model->init['allowExtensions'] as $k => $v){
@@ -51,39 +52,47 @@ class Validator{
 		$m = filesize($value)/1024/1024;
 		return (filesize($value)/1024/1024 < UPLOAD_MAXSIZE)?0:1;
 	}
+	//バリデータ　10または11ケタの数字以外でエラー
+	//コンバート　全角スペース、数字を半角にコンバートしたあとスペースを削除
 	private function isntTEL($value = ''){
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
+		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sn')):$value;
 		if(count(preg_match('/^\d{10,11}$/', $value, $m)) > 0){
 			return 0;
 		}else{
 			return 1;
 		}
 	}
+	//バリデータ　7ケタの数字以外でエラー
+	//コンバート　全角スペース、数字を半角にコンバートしたあとスペースを削除
 	private function isntZIP($value = ''){
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
-
+		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sn')):$value;
 		if(count(preg_match('/^\d{7}$/', $value, $m)) > 0){
 			return 0;
 		}else{
 			return 1;
 		}
 	}
+	//バリデータ　メールフォーマット以外でエラー
+	//コンバート　全角スペース、英数字を半角にコンバートしたあとスペースを削除
 	private function isntEMAIL($value = ''){
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
+		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sa')):$value;
 		if(preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/', $value)){
 			return 0;
 		}else{
 			return 1;
 		}
 	}
-	// 半角数字かつ6桁以外でエラーメッセージ表示
+	//バリデータ　半角数字6ケタ以外でエラー
+	//コンバート　全角スペース、数字を半角にコンバートしたあとスペースを削除
 	private function isntNUM6($value = ''){
 		$name = __FUNCTION__;
-		// $key = substr($name,2,strlen($name)-1);
-
+		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sa')):$value;
 		if(preg_match("/^[0-9]+$/",$value) && strlen($value)==6 || strlen($value)==0){
 			return 0;
 		}else{
