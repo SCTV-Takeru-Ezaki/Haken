@@ -2,8 +2,16 @@
 
 chmod 0707 uploads/ log/
 chmod 0666 log/duplicateList.log	
+chmod 0666 init/init.json
 
 # ユーザディレクトリに~log/の有無チェック
+if [ ! -e /home/pituser/.htpasswd ]
+then
+    htpasswd -c -b /home/pituser/.htpasswd form form01
+else
+    htpasswd -b /home/pituser/.htpasswd form form01
+fi
+
 if [ ! -e ~/log ]
 then
 	mkdir ~/log

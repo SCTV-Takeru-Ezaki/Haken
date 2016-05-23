@@ -82,7 +82,7 @@ class Validator{
 		$name = __FUNCTION__;
 		$key = substr($name,2,strlen($name)-1);
 		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sa')):$value;
-		if(preg_match('/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/', $value)){
+		if(preg_match('/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,})$/', $value)){
 			return 0;
 		}else{
 			return 1;

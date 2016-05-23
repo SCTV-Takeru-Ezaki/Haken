@@ -33,6 +33,8 @@ if(empty($clientId)){
 define("REALTIME_FLAG", 0);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
 $mailflg = 1;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
 $formPath="/home/pituser/public_html/form/";//form設置先のパス
+$facebook_flag=0;
+$facebook_clm="";
 // $formPath="/home/pituser/public_html/client/{$clientId}/form/";
 //---------------------------------------------------
 
@@ -64,10 +66,10 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 	imagepng($image ,$formPath."uploads/".md5(implode("\t",$_POST)).".png");
 	$im = "uploads/".md5(implode("\t",$_POST)).".png";
 }
-$title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
-$body = $postData["enquete5"];//$postData["enquete5"];
+//$title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
+//$body = $postData["enquete5"];//$postData["enquete5"];
 
-$postData["enquete2"] = !empty($postData["snsName"])?$postData["snsName"]:$postData["enquete2"];
+//$postData["enquete2"] = !empty($postData["snsName"])?$postData["snsName"]:$postData["enquete2"];
 
 if(REALTIME_FLAG){
     $status = IMAGE_PUBLIC;
@@ -80,13 +82,6 @@ if(REALTIME_FLAG){
 $htb = file_get_contents($path_to_json);
 $jsondata = json_decode($htb,true);
 
-//返信メール
-if($mailflg){
-define("CURRENT_MAIL_DIR", "/home/pituser/msave");
-require_once(CURRENT_MAIL_DIR."/common/common_msg.php");
-require_once(CURRENT_MAIL_DIR."/lib/MailSave.php");
-$ms = new MailSave();
-}
 
 $imPost = new PPM_ImagePost; // PPM_ImagePostクラスを利用するためにnewする。
 $ppmExec = new PPM_Exec;
@@ -96,12 +91,22 @@ $newDb = new DB;
 $db = $newDb->conn();
 $db->beginTransaction();
 
+//返信メール
+if($mailflg){
+require_once(CURRENT_MAIL_DIR."/lib/MailSave.php");
+$ms = new MailSave($db);
+}
+
 //emailアドレスを取り出す
 if(!empty($postData)){
 	foreach($jsondata['enqueteList'] as $k=>$v){
 		if(array_key_exists("EMAIL",$v["ERROR_CHECK"])){
 			$key = $v["NAME"];
 			$EMAIL = $postData[$key];
+		}
+		if($jsondata['enqueteList'][$k]['TYPE']=="FACEBOOK_AGREE"){
+			$facebook_flag=1;
+			$facebook_clm=$jsondata['enqueteList'][$k]['NAME'];
 		}
 	}
 }else{
@@ -254,15 +259,16 @@ $ms->logs("send mail $returnId $co $datetime");
 $domain = $_SERVER['SERVER_NAME'];
 //各SNSのタイムラインへ投稿
 switch($postData['snsName']){
-        case 'facebook':
-                $url="https://{$domain}/form/facebook.php";
+    case 'facebook':
+        $url="https://{$domain}/form/facebook.php";
 		$params = Array(
 			'mode'  => 'post',
 			'snsUid'  => $postData['snsUid'],
 			'tokenSecret'  => $postData['tokenSecret']
 		);
 		// 「シェアする」へチェックあるときのみPOST、アンケート番号は適宜
-		if($postData["enquete6"]=="1"){
+
+		if(!empty($postData[$facebook_clm])){
 			sendPostQuery($url,$params);
 		}
 		break;

@@ -9,24 +9,30 @@ require_once 'common.php';
 require_once 'Log.php';
 
 $snsName='twitter';
-$mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
-$snsUid=empty($_REQUEST['snsUid'])? '':$_REQUEST['snsUid'];
-$tokenSecret=empty($_REQUEST['tokenSecret'])? '':$_REQUEST['tokenSecret'];
-$id = empty($_REQUEST['id'])? '':$_REQUEST['id'];
-$imgMode=empty($_REQUEST['imgMode'])? '':$_REQUEST['imgMode'];//画像アップロード or プロフ画像
+$mode=empty($_GET['mode'])? $_POST['mode']:$_GET['mode'];
+$snsUid=empty($_POST['snsUid'])? '':$_POST['snsUid'];
+$tokenSecret=empty($_POST['tokenSecret'])? '':$_POST['tokenSecret'];
+$id = empty($_POST['id'])? '':$_POST['id'];
+$imgMode=empty($_GET['imgMode'])? '':$_GET['imgMode'];//画像アップロード or プロフ画像
 
-$file = &Log::factory('file', "/home/pituser/log/out.log", 'TW_CALLBACK.PHP');
+$file = &Log::factory('file', "/home/pituser/public_html/form/log/out.log", 'TW_CALLBACK.PHP');
 
 $oauth_token = $_SESSION['oauth_token'];
 $oauth_token_secret = $_SESSION['oauth_token_secret'];
 
 $file->log("session oauth_token:".$oauth_token);
+$file->log("mode:{$mode},{$tokenSecret},{$snsUid}");
 
 
-if($mode=='get'){
+if($mode=='get' && empty($_GET['denied'])){
 	$tw = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,$oauth_token,$oauth_token_secret);
 	// $access_token = $tw->getAccessToken($_GET['oauth_verifier']);
-	$access_token = $tw->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST['oauth_verifier']));
+	try {
+		$access_token = $tw->oauth("oauth/access_token", array("oauth_verifier" => $_GET['oauth_verifier']));
+	} catch (Exception $e) {
+	    echo 'エラーが発生しました: ',  $e->getMessage(), "<br />\n<a href=\"http://columbia.jp/loudness35th/\">キャンペーンページへ戻る</a>";
+	}
+
 
 	// print_r($access_token);//4データ取得->oauth_token,oauth_token_secret,user_id,screen_name
 	//ユーザー情報取得
@@ -35,7 +41,7 @@ if($mode=='get'){
 	$userId = $access_token['user_id'];
 	$screen_name = $access_token['screen_name'];
 
-	$file->log("get oauth_token:".$oauth_token);
+	// $file->log("get oauth_token:".$oauth_token);
 
 	// 認証後のユーザーデータ取得&登録用オブジェクト生成
 	$connect = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,$oauth_token,$oauth_token_secret);
@@ -46,7 +52,7 @@ if($mode=='get'){
 		$show = $connect->get("users/show",array("screen_name"=>$screen_name));
 		$imgUrl = $show->profile_image_url_https;
 		$imgUrl = preg_replace("/_normal/","",$imgUrl);
-		$path = "/home/lunch/public_html/form/";
+		$path = "/home/pituser/public_html/form/";
 		$dir = "uploads";
 		$image = file_get_contents($imgUrl);
 
@@ -64,7 +70,6 @@ if($mode=='get'){
 		}else{
 		}
 	}
-	//hakerへリダイレクト(画像アップロードの場合)
 	header("Location:index.php?page=input&snsName=".$snsName."&snsUid=".$oauth_token."&tokenSecret=".$oauth_token_secret);
 	exit;
 
@@ -77,17 +82,19 @@ if($mode=='get'){
 
 	// Twitterへ画像アップロード
 	$id = substr($id,1);
-	// $imgPath = "https://lunch.pitcom.jp/pitadmin/image/orig/{$id}.jpg";
-	$imgPath = "../pitadmin/image/orig/{$id}.jpg";
-	$mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
-	$file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
+	// $imgPath = "https://gmabudokan.pitcom.jp/pitadmin/image/orig/{$id}.jpg";
+	// $imgPath = "../pitadmin/image/orig/{$id}.jpg";
+	// $mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
+	// $file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
 	$params = array(
-		"status"=>SHARE_MSG." IDは0{$id}です。\n".SHARE_URL,
-		"media_ids"=>$mediaId->media_id_string
+		"status"=>SHARE_MSG."\n".SHARE_URL,
+		// "media_ids"=>$mediaId->media_id_string
 	);
 
 	//タイムラインに書き込み
 	$post = $connect->post("statuses/update",$params);
 	echo 'twへ投稿完了.res:'.$post->created_at;
 	exit;
+}else{
+			header("Location: http://columbia.jp/loudness35th/");
 }

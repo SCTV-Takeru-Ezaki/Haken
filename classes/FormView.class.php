@@ -302,6 +302,22 @@ class FormView{
 						$k++;
 					}
 					break;
+				case 'FACEBOOK_AGREE':
+					//HTMLを生成
+					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$enq['PROPS']['value'][0]}\"> ";
+
+					//入力済み項目を反映させる
+					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
+					$tag="";
+					$k=0;
+					foreach($html->find('input') as $el){
+						if($this->model->getPostedValueFromKey($enq['NAME']) == $enq['PROPS']['value'][$k]){
+							$el->checked = true;
+						}
+						$tag .= " <label> ".$el."{$enq['PROPS']['label'][$k]}</label>\n";
+						$k++;
+					}
+					break;
 				case 'HIDDEN':
 					$value = (!empty($this->model->postData[$enq['NAME']]))? $this->model->postData[$enq['NAME']] : "";
 					$tag = "<input type=\"{$enq['TYPE']}\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$value}\">\n";
