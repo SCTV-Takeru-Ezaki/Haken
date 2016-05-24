@@ -74,7 +74,7 @@ if($mode=='get' && empty($_GET['denied'])){
 	exit;
 
 }else if($mode=='post'){
-	
+
 	$file->log("post oauth_token(snsUid):".$snsUid);
 
 	// 認証後のユーザーデータ取得&登録用オブジェクト生成
@@ -93,8 +93,12 @@ if($mode=='get' && empty($_GET['denied'])){
 
 	//タイムラインに書き込み
 	$post = $connect->post("statuses/update",$params);
-	echo 'twへ投稿完了.res:'.$post->created_at;
-	exit;
+	if(!empty($post->errors)){
+		echo 'twへ投稿完了.res:'.$post->created_at;
+		exit;
+	}else{
+		error_log("TwitterOAuth Error:{$post->errors[0]->message}",0):
+	}
 }else{
 			header("Location: http://columbia.jp/loudness35th/");
 }
