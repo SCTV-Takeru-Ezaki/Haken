@@ -93,8 +93,8 @@ $db->beginTransaction();
 
 //返信メール
 if($mailflg){
-require_once(CURRENT_MAIL_DIR."/lib/MailSave.php");
-$ms = new MailSave($db);
+	require_once(BASE_DIR."/lib/MailSave.php");
+	$ms = new MailSave($db);
 }
 
 //emailアドレスを取り出す
@@ -219,7 +219,7 @@ $arrPostData = array(
 // id, clientid, mid, statusは必須。
 // 画像が存在しない場合は、img_nameを空白にしてstatusをNOIMAGEにする。
 // statusの各値はcommon.phpのステータスを参照
-$imPost->setTblData($db, $arrPostData); 
+$imPost->setTblData($db, $arrPostData);
 
 // DBにオプションデータを登録
 // enq_dataテーブルに登録するための関数。
@@ -229,7 +229,7 @@ $imPost->setTblData($db, $arrPostData);
 foreach($jsondata['enqueteList'] as $k=>$v){
 	$enq_num = mb_ereg_replace('[^0-9]', '', $v["NAME"]);
 	$enq_text_key = $v["NAME"];
-	
+
 	$arrData = array(
 		"client_id" => CLIENT_ID,
 		"data_id" => $mid,
@@ -281,7 +281,7 @@ switch($postData['snsName']){
 			'tokenSecret'  => $postData['tokenSecret'],
 			'id' => $returnId
 		);
-		sendPostQuery($url,$params);		
+		sendPostQuery($url,$params);
 		break;
 	default:
 		//通常投稿は何もしない
@@ -338,7 +338,7 @@ function isUrlEncoded($array){
 				return true;
 			}
 	}
-	
+
 	return false;
 }
 function urldecode_array($array){

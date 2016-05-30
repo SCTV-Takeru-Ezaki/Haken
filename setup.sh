@@ -1,8 +1,18 @@
 #!/bin/bash
 
-chmod 0707 uploads/ log/
-chmod 0666 log/duplicateList.log	
-chmod 0666 init/init.json
+if [ -e /home/pituser/public_html/form ]
+then
+    exit 0
+else
+    mkdir /home/pituser/public_html/form
+    git clone https://github.com/yusukeasari/Haken.git /home/pituser/public_html/form/
+
+    chmod 0707 /home/pituser/public_html/form/uploads/
+    chmod 0707 /home/pituser/public_html/form/log/
+    chmod 0666 /home/pituser/public_html/form/log/duplicateList.log
+    chmod 0666 /home/pituser/public_html/form/init/init.json
+fi
+
 
 # ユーザディレクトリに~log/の有無チェック
 if [ ! -e /home/pituser/.htpasswd ]
