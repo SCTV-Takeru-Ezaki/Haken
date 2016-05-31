@@ -4,14 +4,14 @@ class User{
 	var $device;
 	var $carrier;
 	var $status;
-	
+
 	protected $userAgent;
-	
+
 	public function __construct($model){
 		$this->model = $model;
-		
+
 		$this->userAgent = $_SERVER['HTTP_USER_AGENT'];
-		
+
 		$this->setUserInfo();
 		$this->initEncoding();
 		$this->setPostedData();
@@ -49,11 +49,16 @@ class User{
 			foreach($enq['ERROR_CHECK'] as $key => $prop){
 				//ポストデータからチェックする値を抽出
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
-				$checker = new Validator($key,$value,$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
+				if($key == 'FILESIZE'){
+					 $checker = new Validator($key,$_SERVER['CONTENT_LENGTH'],$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
+				}else{
+					$checker = new Validator($key,$value,$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
+				}
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
+				//if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]}");
 			}
 		}
-		
+
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function setUploadFile($files){
@@ -65,7 +70,7 @@ class User{
 		if(substr(sprintf('%o', fileperms(UPLOAD_DIR)), -4) != "0707"){
 			chmod(UPLOAD_DIR,0707);
 		}
-		
+
 		//画像削除だった場合
 		if(preg_match("/削除/",$this->model->getValue($this->model->postData,'CMD'))){
 			return false;
@@ -174,7 +179,7 @@ class User{
 			return array("page"=>"closed");
 		}
 
-		
+
 	}
 	private function setUserInfo(){
 		$info = array();
@@ -192,7 +197,7 @@ class User{
 		$exif_datas = @exif_read_data($input);
 		if(isset($exif_datas['Orientation'])){
 			  $orientation = $exif_datas['Orientation'];
-  
+
 			  if($image){
 					  // 未定義
 					  if($orientation == 0){

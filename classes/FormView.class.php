@@ -3,7 +3,7 @@ require_once 'lib/simple_html_dom.php';
 class FormView{
 	var $model;
 	var $templateHtml;
-	
+
 	public function __construct($model){
 		$this->model = $model;
 
@@ -40,12 +40,12 @@ class FormView{
 		$this->model->postData = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($this->model->postData))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
 		if(empty($_SERVER['HTTP_REFERER'])){
 			header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
-			exit;	
+			exit;
 		}
 		if(!empty($this->model->postData['edit'])){
 			if(preg_match("/編集/",$this->model->postData['edit'])){
 				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
-				exit;	
+				exit;
 			}
 		}
 
@@ -132,7 +132,7 @@ class FormView{
 					break;
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
-			$el->innertext = $tag;			
+			$el->innertext = $tag;
 			if(!empty($enq['TITLE'])){
 				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
 				$el2->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span>";
@@ -162,20 +162,20 @@ class FormView{
 			'method' => $method,
 			'header'  => implode("\r\n", $header),
 		));
-	
+
 		//ステータスをチェック / PHP5専用 get_headers()
 		$respons = get_headers($url);
 		if(preg_match("/(404|403|500)/",$respons['0'])){
 			return false;
 		}
-	
+
 		if($method == 'GET') {
 			$url = ($data != '')?$url.'?'.$data:$url;
 		}elseif($method == 'POST') {
 			$options['http']['content'] = $data;
 		}
 		$content = file_get_contents($url, false, stream_context_create($options));
-		
+
 		return $content;
 	}
 
@@ -230,7 +230,7 @@ class FormView{
 					foreach($enq['PROPS']['label'] as $k =>  $v){
 						$tag .= "<option value=\"{$enq['PROPS']['value'][$k]}\">{$v}</option>\n";
 					}
-					
+
 					//入力済み項目を反映させる
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
@@ -275,7 +275,7 @@ class FormView{
 					$tag="";
 					$k=0;
 					foreach($html->find('input') as $el){
-						if(is_array($this->model->getPostedValueFromKey($enq['NAME']))){				
+						if(is_array($this->model->getPostedValueFromKey($enq['NAME']))){
 							foreach($this->model->getPostedValueFromKey($enq['NAME']) as $r){
 								if($r == $enq['PROPS']['value'][$k]){
 									$el->checked = true;
@@ -333,7 +333,7 @@ class FormView{
 					foreach($enq['PROPS']['label'] as $k =>  $v){
 						$tag .= "<option value=\"{$enq['PROPS']['value'][$k]}\">{$v}</option>\n";
 					}
-					
+
 					//入力済み項目を反映させる
 					$html = str_get_html($tag, true, true, DEFAULT_TARGET_CHARSET, false);
 					$tag="";
@@ -383,7 +383,7 @@ class FormView{
 	}
 
 	private function checkWrongAccess(){
-		if(empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+		if(!preg_match("/{$_SERVER['SERVER_NAME']}/", $_SERVER['HTTP_REFERER']) && empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
 	}
 
 	private function publish() {
@@ -403,9 +403,9 @@ class FormView{
 				$vp = "width=device-width,initial-scale=1,user-scalable=no";
 				break;
 			default :
-			
+
 				$this->templateHtml->find('html',0)->outertext = '<?xml version="1.0" encoding="utf-8"?>'.$this->templateHtml->find('html',0)->outertext;
-				
+
 				$vp = "";
 				break;
 		}
@@ -421,7 +421,7 @@ class FormView{
 			header("Content-Type: text/html; charset=utf-8");
 			echo $this->templateHtml;
 		}
-		
+
 		$this->templateHtml->clear();
 	}
 
