@@ -50,12 +50,12 @@ class User{
 				//ポストデータからチェックする値を抽出
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
 				if($key == 'FILESIZE'){
-					 $checker = new Validator($key,$_SERVER['CONTENT_LENGTH'],$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
+					 $checker = new Validator($key,filesize($this->model->postData['image']),$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
 				}else{
 					$checker = new Validator($key,$value,$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
 				}
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
-				//if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]}");
+				if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->postData['image']}".filesize($this->model->postData['image']));
 			}
 		}
 

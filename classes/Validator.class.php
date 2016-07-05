@@ -49,7 +49,7 @@ class Validator{
 		return $result;
 	}
 	private function isntFILESIZE($value = ''){
-		$m = $value;
+		error_log($value." < ".UPLOAD_MAXSIZE*1024*1024);
 		return ($value < UPLOAD_MAXSIZE*1024*1024)?0:1;
 	}
 	//バリデータ　10または11ケタの数字以外でエラー
