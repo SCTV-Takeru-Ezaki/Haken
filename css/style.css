@@ -1,5 +1,11 @@
+/* 全体背景色 */
 body{
   background-color:#E7E7E7;
+  /* 背景画像を使用する場合
+  background-image: url("../img/bg.png");
+  background-repeat: no-repeat;
+  background-position: center top;
+  */
 }
 
 html, button, input, select, textarea, span,
@@ -7,6 +13,7 @@ html, button, input, select, textarea, span,
   /* フォント変更する場合は上記purecssのセレクタ指定*/
   /*font-family: "ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ","Meiryo",serif;*/
 }
+/* 入力部分背景 */
 #bg {
   background-color:#FFFFFF;
   max-width:768px;
@@ -17,6 +24,31 @@ html, button, input, select, textarea, span,
   margin-bottom:1em;
   text-align: center;
 }
+/* 項目文字修飾 */
+.itemTitle {
+  color:#8a2323;
+  font-weight:bold;
+}
+/* エラー文字修飾 */
+.itemError {
+  font-size: 0.8em;
+  font-weight: bold;
+  padding-top: 0.25em;
+  color:#FF0000;
+}
+/* 確認、送信ボタン修飾 */
+.pure-button-secondary {
+    background: rgb(66, 184, 221); /* this is a light blue */
+}
+/*規約テキストエリア0623追記*/
+#kiyaku{
+  width:100%;
+  height:14em;
+  color:#000;
+  overflow-x:hidden;
+  overflow-y:scroll;
+}
+
 #wrapper {
   padding: 0.75em 0.5em;
   text-align: center;
@@ -29,16 +61,6 @@ html, button, input, select, textarea, span,
 }
 .uploadImage {
   width:235px;
-}
-.itemTitle {
-  color:#8a2323;
-  font-weight:bold;
-}
-.itemError {
-  font-size: 0.8em;
-  font-weight: bold;
-  padding-top: 0.25em;
-  color:#FF0000;
 }
 #headerImg{
   margin-left:auto;
@@ -66,9 +88,6 @@ input[type="checkbox"],input[type="radio"] {
 }
 #edit {
   margin-right: 2em;
-}
-.pure-button-secondary {
-    background: rgb(66, 184, 221); /* this is a light blue */
 }
 label {
   font-size: 1.5em;
@@ -101,13 +120,4 @@ label {
 #enquete5 {
   /*折り返し0623追記*/
   word-wrap:break-word;
-}
-
-/*規約テキストエリア0623追記*/
-#kiyaku{
-  width:100%;
-  height:14em;
-  color:#000;
-  overflow-x:hidden;
-  overflow-y:scroll;
 }
