@@ -82,13 +82,13 @@ if($mode=='get' && empty($_GET['denied'])){
 
 	// Twitterへ画像アップロード
 	$id = substr($id,1);
-	// $imgPath = "https://gmabudokan.pitcom.jp/pitadmin/image/orig/{$id}.jpg";
-	// $imgPath = "../pitadmin/image/orig/{$id}.jpg";
-	// $mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
-	// $file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
+	//$imgPath = "https://gmabudokan.pitcom.jp/pitadmin/image/orig/{$id}.jpg";
+	$imgPath = "../pitadmin/image/orig/{$id}.jpg";
+	$mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
+	$file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
 	$params = array(
 		"status"=>SHARE_MSG."\n".SHARE_URL,
-		// "media_ids"=>$mediaId->media_id_string
+		"media_ids"=>$mediaId->media_id_string
 	);
 
 	//タイムラインに書き込み
@@ -97,7 +97,7 @@ if($mode=='get' && empty($_GET['denied'])){
 		echo 'twへ投稿完了.res:'.$post->created_at;
 		exit;
 	}else{
-		error_log("TwitterOAuth Error:{$post->errors[0]->message}",0):
+		error_log("TwitterOAuth Error:{$post->errors[0]->message}",0);
 	}
 }else{
 			header("Location: http://columbia.jp/loudness35th/");
