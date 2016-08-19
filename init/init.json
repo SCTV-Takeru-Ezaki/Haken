@@ -1,7 +1,7 @@
 {
     "templateDir": "templateDir/",
     "startDate": "2014-07-04 00:00:00",
-    "endDate": "2016-08-18 23:59:59",
+    "endDate": "2017-08-18 23:59:59",
     "allowExtensions": "jpg,jpeg,png,gif",
     "enqueteList": [
         {
@@ -76,7 +76,7 @@
                 },
             "PROPS": {
                 "size": 32,
-                "maxlength": 200,
+                "maxlength": 100,
                 "class": "textForm"
             }
         },                  
