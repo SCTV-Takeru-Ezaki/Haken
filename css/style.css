@@ -26,7 +26,7 @@ html, button, input, select, textarea, span,
 }
 /* 項目文字修飾 */
 .itemTitle {
-  color:#8a2323;
+  color:#000000;
   font-weight:bold;
 }
 /* エラー文字修飾 */

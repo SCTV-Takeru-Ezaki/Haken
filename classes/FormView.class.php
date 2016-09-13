@@ -54,7 +54,13 @@ class FormView{
 			$ext = explode(".",$this->model->postData['image']);
 			$n = count($ext);
 			$image = new Imagick($this->model->postData['image']);
-			$image->thumbnailImage(400, 0);
+			$width_o = $image->getImageWidth();
+			$height_o = $image->getImageHeight();
+			if ($height_o < $width_o)
+				$image->thumbnailImage(0, 512);
+			else
+				$image->thumbnailImage(512, 0);
+
 			$this->model->postData['image'] = "data:image/".$ext[$n-1].";base64,".base64_encode($image);
 		}
 		if(empty($this->model->postData['snstype']) || empty($this->model->postData['snsid'])){
