@@ -8,6 +8,9 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 require_once 'common.php';
 require_once 'Log.php';
 
+//キャンペーンサイトURL
+$CAMPAGN_PAGE = '';
+
 $snsName='twitter';
 $mode=empty($_GET['mode'])? $_POST['mode']:$_GET['mode'];
 $snsUid=empty($_POST['snsUid'])? '':$_POST['snsUid'];
@@ -23,6 +26,10 @@ $oauth_token_secret = $_SESSION['oauth_token_secret'];
 $file->log("session oauth_token:".$oauth_token);
 $file->log("mode:{$mode},{$tokenSecret},{$snsUid}");
 
+if($CAMPAGN_PAGE == ''){
+	print "キャンペーンサイトURLを設定してください";
+	exit;
+}
 
 if($mode=='get' && empty($_GET['denied'])){
 	$tw = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,$oauth_token,$oauth_token_secret);
@@ -30,7 +37,7 @@ if($mode=='get' && empty($_GET['denied'])){
 	try {
 		$access_token = $tw->oauth("oauth/access_token", array("oauth_verifier" => $_GET['oauth_verifier']));
 	} catch (Exception $e) {
-	    echo 'エラーが発生しました: ',  $e->getMessage(), "<br />\n<a href=\"http://columbia.jp/loudness35th/\">キャンペーンページへ戻る</a>";
+	    echo 'エラーが発生しました: ',  $e->getMessage(), "<br />\n<a href=\"{$CAMPAGN_PAGE}\">キャンペーンページへ戻る</a>";
 	}
 
 
@@ -83,12 +90,12 @@ if($mode=='get' && empty($_GET['denied'])){
 	// Twitterへ画像アップロード
 	$id = substr($id,1);
 	//$imgPath = "https://gmabudokan.pitcom.jp/pitadmin/image/orig/{$id}.jpg";
-	$imgPath = "../pitadmin/image/orig/{$id}.jpg";
-	$mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
-	$file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
+//	$imgPath = "../pitadmin/image/orig/{$id}.jpg";
+//	$mediaId = $connect->upload("media/upload",array("media"=>$imgPath));
+//	$file->log("mediaId string:".$mediaId->media_id_string.",ID:",$id);
 	$params = array(
-		"status"=>SHARE_MSG."\n".SHARE_URL,
-		"media_ids"=>$mediaId->media_id_string
+		"status"=>SHARE_MSG."\n".SHARE_URL
+//		"media_ids"=>$mediaId->media_id_string
 	);
 
 	//タイムラインに書き込み
@@ -100,5 +107,5 @@ if($mode=='get' && empty($_GET['denied'])){
 		error_log("TwitterOAuth Error:{$post->errors[0]->message}",0);
 	}
 }else{
-			header("Location: http://columbia.jp/loudness35th/");
+			header("Location: {$CAMPAGN_PAGE}");
 }

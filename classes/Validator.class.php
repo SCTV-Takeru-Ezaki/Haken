@@ -99,4 +99,26 @@ class Validator{
 			return 1;
 		}
 	}
+	//バリデータ　半角英数かどうか
+	//コンバート　全角スペース、数字を半角にコンバートしたあとスペースを削除
+	private function isntALPHANUM($value = ''){
+		$name = __FUNCTION__;
+		$key = substr($name,2,strlen($name)-1);
+		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sa')):$value;
+		if(count(preg_match('/^[a-zA-Z0-9]+$/',$value,$m)) > 0){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
+	private function isntNUM($value = ''){
+		$name = __FUNCTION__;
+		$key = substr($name,2,strlen($name)-1);
+		$value = ($this->auto_convert)? preg_replace('/(\s)/','',mb_convert_kana($value,'sn')):$value;
+		if(count(preg_match('/^[0-9]+$/', $value, $m)) > 0){
+			return 0;
+		}else{
+			return 1;
+		}
+	}
 }
