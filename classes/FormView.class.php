@@ -1,5 +1,4 @@
 <?php
-require_once 'lib/simple_html_dom.php';
 class FormView{
 	var $model;
 	var $templateHtml;
@@ -10,7 +9,12 @@ class FormView{
 		$this->loadTemplate();
 	}
 	private function loadTemplate(){
-		$this->templateHtml = file_get_html($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html', false, null, -1, -1, true, true, DEFAULT_TARGET_CHARSET, false);
+		//PHP7に対応
+		$this->templateHtml = new simple_html_dom();
+	    $contents = file_get_contents($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
+	    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE) return false;
+
+	    $this->templateHtml->load($contents, false, -1);
 	}
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){

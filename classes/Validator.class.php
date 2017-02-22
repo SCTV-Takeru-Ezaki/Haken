@@ -1,5 +1,4 @@
 <?php
-require_once 'lib/simple_html_dom.php';
 class Validator{
 	var $method;
 	var $value;
