@@ -14,7 +14,7 @@ class FormView{
 	    $contents = file_get_contents($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
 	    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE) return false;
 
-	    $this->templateHtml->load($contents, false, -1);
+	    $this->templateHtml->load($contents, false, false);
 	}
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){
