@@ -14,7 +14,7 @@ class FormView{
 	    $contents = file_get_contents($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
 	    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE) return false;
 
-	    $this->templateHtml->load($contents, false, false);
+	    $this->templateHtml->load($contents, false, -1);
 	}
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){
@@ -143,9 +143,12 @@ class FormView{
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
 			$el->innertext = $tag;
-			if(!empty($enq['TITLE'])){
+			if(!empty($enq['TITLE']) && $enq['TYPE'] != 'FACEBOOK_AGREE') {
 				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
-				$el2->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span>";
+				$el2->innertext = "<span class=\"itemTitle\">{$enq['TITLE']}</span> ";
+			}else if($enq['TYPE'] == 'FACEBOOK_AGREE' && !empty($this->model->getPostedValueFromKey('tokenSecret'))){
+				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
+				$el2->innertext = "<span class=\"itemTitle\">$str{$enq['TITLE']}</span> ";
 			}
 		}
 
@@ -314,6 +317,7 @@ class FormView{
 					break;
 				case 'FACEBOOK_AGREE':
 					//HTMLを生成
+					if(empty($this->model->getPostedValueFromKey('tokenSecret'))) break;
 					$tag = "<input type=\"checkbox\" name=\"{$enq['NAME']}\" style=\"{$style}\" value=\"{$enq['PROPS']['value'][0]}\"> ";
 
 					//入力済み項目を反映させる
@@ -363,7 +367,10 @@ class FormView{
 			}
 			$el = $this->templateHtml->find("span#".$enq['NAME'],0);
 			$el->innertext = $tag;
-			if(!empty($enq['TITLE'])){
+			if(!empty($enq['TITLE']) && $enq['TYPE'] != 'FACEBOOK_AGREE') {
+				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
+				$el2->innertext = "<span class=\"itemTitle\">$str{$enq['TITLE']}</span> ";
+			}else if($enq['TYPE'] == 'FACEBOOK_AGREE' && !empty($this->model->getPostedValueFromKey('tokenSecret'))){
 				$el2 = $this->templateHtml->find("span#".$enq['NAME']."title",0);
 				$el2->innertext = "<span class=\"itemTitle\">$str{$enq['TITLE']}</span> ";
 			}

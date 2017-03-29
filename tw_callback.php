@@ -9,7 +9,7 @@ require_once 'common.php';
 require_once 'Log.php';
 
 //キャンペーンサイトURL
-$CAMPAGN_PAGE = '';
+$CAMPAGN_PAGE = 'https://theyellowmonkey.pitcom.jp/';
 
 $snsName='twitter';
 $mode=empty($_GET['mode'])? $_POST['mode']:$_GET['mode'];
@@ -18,13 +18,13 @@ $tokenSecret=empty($_POST['tokenSecret'])? '':$_POST['tokenSecret'];
 $id = empty($_POST['id'])? '':$_POST['id'];
 $imgMode=empty($_GET['imgMode'])? '':$_GET['imgMode'];//画像アップロード or プロフ画像
 
-$file = &Log::factory('file', "/home/pituser/public_html/form/log/out.log", 'TW_CALLBACK.PHP');
+//$file = &Log::factory('file', "/home/pituser/public_html/form/log/out.log", 'TW_CALLBACK.PHP');
 
 $oauth_token = $_SESSION['oauth_token'];
 $oauth_token_secret = $_SESSION['oauth_token_secret'];
 
-$file->log("session oauth_token:".$oauth_token);
-$file->log("mode:{$mode},{$tokenSecret},{$snsUid}");
+//$file->log("session oauth_token:".$oauth_token);
+//$file->log("mode:{$mode},{$tokenSecret},{$snsUid}");
 
 if($CAMPAGN_PAGE == ''){
 	print "キャンペーンサイトURLを設定してください";
@@ -82,7 +82,7 @@ if($mode=='get' && empty($_GET['denied'])){
 
 }else if($mode=='post'){
 
-	$file->log("post oauth_token(snsUid):".$snsUid);
+//	$file->log("post oauth_token(snsUid):".$snsUid);
 
 	// 認証後のユーザーデータ取得&登録用オブジェクト生成
 	$connect = new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET,$snsUid,$tokenSecret);
@@ -104,7 +104,7 @@ if($mode=='get' && empty($_GET['denied'])){
 		echo 'twへ投稿完了.res:'.$post->created_at;
 		exit;
 	}else{
-		error_log("TwitterOAuth Error:{$post->errors[0]->message}",0);
+		error_log("TwitterOAuth Error:{$post->errors[0]->message}{$snsUid}{$tokenSecret}",0);
 	}
 }else{
 			header("Location: {$CAMPAGN_PAGE}");

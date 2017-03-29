@@ -33,8 +33,7 @@ if(empty($clientId)){
 define("REALTIME_FLAG", 0);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
 $mailflg = 1;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
 $formPath="/home/pituser/public_html/form/";//form設置先のパス
-$facebook_flag=0;
-$facebook_clm="";
+$facebook_clm=0;
 // $formPath="/home/pituser/public_html/client/{$clientId}/form/";
 //---------------------------------------------------
 
@@ -105,7 +104,6 @@ if(!empty($postData)){
 			$EMAIL = $postData[$key];
 		}
 		if($jsondata['enqueteList'][$k]['TYPE']=="FACEBOOK_AGREE"){
-			$facebook_flag=1;
 			$facebook_clm=$jsondata['enqueteList'][$k]['NAME'];
 		}
 	}
@@ -123,7 +121,13 @@ $file->log("EMAIL:{$EMAIL}");
 $newId = $imPost->getNewId($db);
 $file->log("$newId");
 $mid = sprintf("%05d", $newId);
-
+if(!$mid){
+	$retData = array("error" =>"エラーが発生しました。時間をおいて投稿し直して下さい。");
+	$retJson = json_encode($retData);
+	echo $retJson;
+	$file->log("Error: None ID.");
+	exit;
+}
 $fileName = "{$mid}.jpg";
 
 //事後チェック１
@@ -139,20 +143,13 @@ if(REALTIME_FLAG){
 
 // @todo 画像をアップロードした場所からorigフォルダ、resizeフォルダへコピー
 $testPath = $formPath."".$im;
-$file->log($testPath);
-//im $testPath;
-$toPath = ORIG_DIR_PATH."/{$fileName}";
-$file->log("to path:{$toPath}");
-copy($testPath, $toPath);
-chmod($toPath, 0666);
-
-$toPath = RESIZE_DIR_PATH."/{$fileName}";
-
 $file->log("r to path:{$toPath}");
-$bool = $imPost->execImageRegist($fileName, $toPath);
+$bool = $imPost->execImageRegist($fileName, $testPath);
 if(!$bool){
-	echo "画像が保存できませんでした。";
-	$file->log("cant save image!!");
+	$retData = array("error" =>"エラーが発生しました。時間をおいて投稿し直して下さい。");
+	$retJson = json_encode($retData);
+	echo $retJson;
+	$file->log("Error: No Image.");
 	exit;
 }
 
