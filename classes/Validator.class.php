@@ -42,8 +42,6 @@ class Validator{
 					break;
 				}
 			}
-		}else{
-			$result = 0;
 		}
 		return $result;
 	}

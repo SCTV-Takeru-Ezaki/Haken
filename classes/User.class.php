@@ -55,10 +55,12 @@ class User{
 					$checker = new Validator($key,$value,$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
 				}
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
-				if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->postData['image']}".filesize($this->model->postData['image']));
+				error_log("EEROR:".$checker->getResult());
+				//if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->postData['image']}".filesize($this->model->postData['image']));
+				if($key == 'FILETYPE') error_log("FILETYPE CHECK:{$this->model->postData['image']}/".$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]);
 			}
 		}
-
+//		print_r($this->model->init['enqueteList']);
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
 	private function setUploadFile($files){
@@ -94,6 +96,7 @@ class User{
 					$tmpName = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp";
 					// $tmp = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp.{$v}";
 					$tmp = $tmpName.".{$v}";
+					$ori = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_ori".".{$v}";
 					$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".{$v}";
 					@move_uploaded_file($files["image"]["tmp_name"], $tmp)?$tmp:false;
 					// 動画GIF対応(↑$tmpName追加,$tmp修正)
@@ -109,7 +112,16 @@ class User{
 						system("rm -rf $delImagePath");
 					}//動画GIF対応
 
-					$this->orientationFixedImage($new,$tmp);
+					$this->orientationFixedImage($ori,$tmp);
+					$image->readImage($ori);
+					$size = ($image->getImageHeight() > $image->getImageWidth())? [0,THUMBNAIL_S_SIZE]:[THUMBNAIL_S_SIZE,0];
+
+					$image->resizeImage($size[0],$size[1],Imagick::FILTER_LANCZOS, 1);
+					$image->writeImage($new);
+					$image->destroy();
+
+					unlink($tmp);
+					unlink($ori);
 					return $new;
 					break;
 				}
