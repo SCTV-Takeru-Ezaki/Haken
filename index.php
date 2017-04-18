@@ -12,6 +12,7 @@ require_once 'lib/htpasswd.php';
 define("POST_EXEC","post.php");
 define("UPLOAD_DIR","uploads/");
 define("UPLOAD_MAXSIZE",5);
+define("THUMBNAIL_S_SIZE",512);
 
 define("INIT_FILE","init/init.json");
 define("ERROR_MESSAGE_FILE","init/errorMessage.json");
