@@ -3,6 +3,7 @@
     "startDate": "2014-07-04 00:00:00",
     "endDate": "2020-08-18 23:59:59",
     "allowExtensions": "jpg,jpeg,png,gif",
+    "basicAuth":true,
     "enqueteList": [
         {
             "NAME": "image",
@@ -58,7 +59,7 @@
         },
         {
             "NAME": "enquete4",
-            "TITLE": "ニックネーム(任意)",
+            "TITLE": "ニックネーム(20文字以内、任意)",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
                 },
@@ -70,7 +71,7 @@
         },        
         {
             "NAME": "enquete5",
-            "TITLE": "メッセージ(任意)",
+            "TITLE": "メッセージ(100文字以内、任意)",
             "TYPE": "TEXTAREA",
             "ERROR_CHECK": {
                 },

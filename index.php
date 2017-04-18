@@ -7,6 +7,7 @@ mb_internal_encoding("UTF-8");
 //オートロードを有効に
 require_once 'Log.php';
 require_once 'lib/autoload.php';
+require_once 'lib/htpasswd.php';
 
 define("POST_EXEC","post.php");
 define("UPLOAD_DIR","uploads/");

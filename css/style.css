@@ -37,8 +37,9 @@ html, button, input, select, textarea, span,
   color:#FF0000;
 }
 /* 確認、送信ボタン修飾 */
-.pure-button-secondary {
+.pure-button-primary {
     background: rgb(66, 184, 221); /* this is a light blue */
+    box-shadow:2px 2px #e6663e;
 }
 /*規約テキストエリア0623追記*/
 #kiyaku{
