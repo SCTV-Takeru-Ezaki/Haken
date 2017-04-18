@@ -178,13 +178,27 @@ class User{
 		}
 
 		if(time()>=strtotime($this->model->init['startDate']) && time()<=strtotime($this->model->init['endDate'])){
-			//期間内
 			return true;
-			//$display->log('true');
 		}else if(time()<strtotime($this->model->init['startDate'])){
-			//開始前
-			//$display->log('before');
-			return array("page"=>"before");
+			//期間内
+			header("Expires: 0");
+			header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+			header("Cache-Control: public");
+
+			$pass_array = loadHtpasswd();
+
+			if (isset($_SERVER['PHP_AUTH_USER']) && testHtpasswd( $pass_array,  $_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'] ) && !$this->model->init['basicAuth'])
+			{
+				return true;
+			// Do stuff
+			}
+			else
+			{
+				header('WWW-Authenticate: Basic realm="Restricted area"');
+				header('HTTP/1.0 401 Unauthorized');
+				echo 'Access denied. Please enter correct credentials.';
+				exit;
+			}
 		}else{
 			//終了
 			//$display->log('closed');
