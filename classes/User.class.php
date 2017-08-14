@@ -114,7 +114,7 @@ class User{
 
 					$this->orientationFixedImage($ori,$tmp);
 					$image->readImage($ori);
-					$size = ($image->getImageHeight() > $image->getImageWidth())? [0,THUMBNAIL_S_SIZE]:[THUMBNAIL_S_SIZE,0];
+					$size = ($image->getImageHeight() > $image->getImageWidth())? [0,500]:[500,0];
 
 					$image->resizeImage($size[0],$size[1],Imagick::FILTER_LANCZOS, 1);
 					$image->writeImage($new);

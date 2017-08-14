@@ -1,7 +1,7 @@
 <?php
 //FacebookSDKを読み込む
 require_once("./lib/facebook.php");
-require_once("common.php");
+require_once("../common.php");
 
 $snsName='facebook';
 $mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
@@ -25,7 +25,6 @@ if(empty($_REQUEST['mode']) || $_REQUEST['mode']==null){
 if($mode=='get'){
 	//ログイン状態を取得
 	$userObj = $facebook->getUser();
-
 	if($userObj) {
 		//ログインしている場合
 		try{

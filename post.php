@@ -30,7 +30,7 @@ if(empty($clientId)){
 }
 
 //------------------設定項目-------------------------
-define("REALTIME_FLAG", 0);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
+define("REALTIME_FLAG", 1);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
 $mailflg = 1;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
 $formPath="/home/pituser/public_html/form/";//form設置先のパス
 $facebook_clm=0;

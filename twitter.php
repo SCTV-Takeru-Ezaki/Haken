@@ -3,7 +3,7 @@
 // require 'vendor/autoload.php';
 require 'lib/tw_autoload.php';
 use Abraham\TwitterOAuth\TwitterOAuth;
-require_once 'common.php';
+require_once '../common.php';
 
 $snsName='twitter';//
 $mode=empty($_REQUEST['mode'])? '':$_REQUEST['mode'];
