@@ -14,28 +14,62 @@ define("UPLOAD_DIR","uploads/");
 define("UPLOAD_MAXSIZE",5);
 define("THUMBNAIL_S_SIZE",512);
 
-define("INIT_FILE","init/init.json");
-define("ERROR_MESSAGE_FILE","init/errorMessage.json");
+define("DEFAULT_LANG","ja");
+
+//define("INIT_FILE","init/init.json");
+//define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
 define("PROTOCOL",((!empty($_SERVER['HTTPS']))?'https://':'http://'));
 
 $d = (dirname($_SERVER['REQUEST_URI']) != "/")? dirname($_SERVER['REQUEST_URI']) : "/".basename($_SERVER['REQUEST_URI']);
 define("HTTP_SCRIPT_DIR",PROTOCOL.$_SERVER['SERVER_NAME'].$d);
 
+//$lang = get
+
 //モデルを構築し
 $model = new Model();
+$user = new User();
+$user->setModel($model);
+//$model->setLang($user->getLang());
+
+if(!empty($_GET['lang'])){
+	setcookie('lang',$_GET['lang']);
+}
+if(!empty($_COOKIE['lang'])){
+	$user->setLang($_COOKIE['lang']);
+}
+
+$initFile = "init/init.".$user->getLang().".json";
+$errorMessageFile = "init/errorMessage.".$user->getLang().".json";
+
+$initFile = checkLangFile($initFile);
+$errorMessageFile = checkLangFile($errorMessageFile);	
+
 
 //設定情報とエラメをロード。設定情報とエラメ情報をセット
-$init = new JSONLoader(INIT_FILE);
+$init = new JSONLoader($initFile);
 $model->setInit($init->getJsonData());
 
-$errorMessage = new JSONLoader(ERROR_MESSAGE_FILE);
+$errorMessage = new JSONLoader($errorMessageFile);
 $model->setErrorMessage($errorMessage->getJsonData());
 
-//ユーザー情報をModelへセット
-$user = new User($model);
+
+$user->setting();
 
 //インターフェース構築＆表示
 $view = new FormView($model);
 $view->display();
 exit;
+
+function checkLangFile($file){
+	global $user;
+	//
+	if(file_exists($file)){
+		return $file;
+	}else if(!file_exists($file) && $user->getLang() != "ja" && file_exists(preg_replace("/\.([a-z]){2}\./",".en.",$file))){
+		return preg_replace("/\.([a-z]){2}\./",".en.",$file);
+	}else {
+		return preg_replace("/\.([a-z]){2}\./",".ja.",$file);
+	}
+
+}

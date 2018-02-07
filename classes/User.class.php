@@ -3,14 +3,20 @@ class User{
 	var $model;
 	var $device;
 	var $carrier;
+	var $lang;
 	var $status;
+	var $userLang;
 
 	protected $userAgent;
 
-	public function __construct($model){
-		$this->model = $model;
-
+	public function __construct(){
 		$this->userAgent = $_SERVER['HTTP_USER_AGENT'];
+		$this->userLang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+	}
+	public function setModel($model){
+		$this->model = $model;
+	}
+	public function setting(){
 
 		$this->setUserInfo();
 		$this->initEncoding();
@@ -74,7 +80,8 @@ class User{
 		}
 
 		//画像削除だった場合
-		if(preg_match("/削除/",$this->model->getValue($this->model->postData,'CMD'))){
+		$p = "/".preg_quote($this->model->init['deleteButton'],'/')."/";
+		if(preg_match($p,$this->model->getValue($this->model->postData,'CMD'))){
 			return false;
 		}
 		//SNSプラグインから画像を渡された場合
@@ -150,6 +157,12 @@ class User{
 			return 'softbank';
 		}
 	}
+	public function getLang(){
+		return substr($this->userLang, 0, 2);
+	}
+	public function setLang($_lang){
+		$this->userLang = $_lang;
+	}
 	private function isCarrier(){
 		return ($this->getCarrier() != "")? true : false;
 	}
@@ -157,7 +170,6 @@ class User{
 		return ($this->carrier == 'kddi' && $this->device == 'featurephone')? true : false;
 	}
 	private function getStatus(){
-
 		return $this->checkStatus();
 	}
 	private function checkStatus(){
@@ -214,6 +226,7 @@ class User{
 					'UA' => $this->userAgent,
 					'DEVICE' => $this->getDevice(),
 					'CARRIER' => $this->getCarrier(),
+					'LANG' => $this->userLang,
 					'STATUS' => $this->getStatus()
 		);
 	}

@@ -11,10 +11,21 @@ class FormView{
 	private function loadTemplate(){
 		//PHP7に対応
 		$this->templateHtml = new simple_html_dom();
-	    $contents = file_get_contents($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
-	    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE) return false;
 
-	    $this->templateHtml->load($contents, false, false);
+		$file = $this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.'.substr($this->model->userInfo['LANG'],0,2).'.html';
+
+		if(file_exists($file)){
+			$file = $file;
+		}else if(!file_exists($file) && substr($this->model->userInfo['LANG'],0,2) != "ja" && file_exists(preg_replace("/\.([a-z]){2}\./",".en.",$file))){
+			$file = preg_replace("/\.([a-z]){2}\./",".en.",$file);
+		}else {
+			$file = preg_replace("/\.([a-z]){2}\./",".ja.",$file);
+		}
+
+		$contents = file_get_contents($file);
+		if (empty($contents) || strlen($contents) > MAX_FILE_SIZE) return false;
+
+		$this->templateHtml->load($contents, false, false);
 	}
 	public function display(){
 		switch($this->model->userInfo['STATUS']['page']){
@@ -47,7 +58,8 @@ class FormView{
 			exit;
 		}
 		if(!empty($this->model->postData['edit'])){
-			if(preg_match("/編集/",$this->model->postData['edit'])){
+			$p = "/".preg_quote($this->model->init['editButton'],'/')."/";
+			if(preg_match($p,$this->model->postData['edit'])){
 				echo $this->sendPostQuery(PROTOCOL.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'].'?page=input',$this->model->postData);
 				exit;
 			}
@@ -169,6 +181,7 @@ class FormView{
 		$header = Array(	"Content-Type: application/x-www-form-urlencoded",
 							"Referer: ".$ref,
 							"User-Agent: ".$this->model->userInfo['UA'],
+							"Accept-Language: ".$this->model->userInfo['LANG'],
 						    'Authorization: Basic '.base64_encode('pmt:1123')
 			);
 		$options = array('http' => Array(
@@ -207,7 +220,7 @@ class FormView{
 					}
 					$exts = rtrim($exts, ",");
 
-					$deleteButton = '<br /><input type="submit" name="CMD" value="画像を削除">';
+					$deleteButton = '<br /><input type="submit" name="CMD" value="'.$this->model->init['deleteButton'].'">';
 
 					if(!empty($this->model->postData[$enq['NAME']]) ){
 						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img width=\"240\" src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">{$deleteButton}</div></div>\n";

@@ -1,0 +1,104 @@
+{
+    "editButton":"編集",
+    "deleteButton":"削除",
+    "enqueteList": [
+        {
+            "NAME": "image",
+            "TITLE": "画像(必須)",
+            "TYPE": "FILE",
+            "ERROR_CHECK": {
+                "REQUIRE": 0,
+                "FILETYPE": 0,
+                "FILESIZE": 3
+            },
+            "PROPS": {}
+        },
+        {
+            "NAME": "enquete1",
+            "TITLE": "下記、利用規約に同意しますか(必須)",
+            "TYPE": "AGREE",
+            "ERROR_CHECK": {
+                "REQUIRE": 0
+            },
+            "PROPS": {
+                "label": [
+                    "同意します。"
+                ],
+                "value": [
+                    "同意します。"
+                ]
+            }
+        },
+        {
+            "NAME": "enquete2",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {
+                },
+            "PROPS": {
+		"label": [""],
+                "value":["form"]
+            }
+        },
+        {
+            "NAME": "enquete3",
+            "TITLE": "メールアドレス(必須)",
+            "TYPE": "TEXT",
+            "ERROR_CHECK": {
+                "REQUIRE": 0,
+                "EMAIL":0
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 255,
+                "class": "textForm"
+            }
+        },
+        {
+            "NAME": "enquete4",
+            "TITLE": "ニックネーム(20文字以内、任意)",
+            "TYPE": "TEXT",
+            "ERROR_CHECK": {
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 20,
+                "class": "textForm"
+            }
+        },        
+        {
+            "NAME": "enquete5",
+            "TITLE": "メッセージ(100文字以内、任意)",
+            "TYPE": "TEXTAREA",
+            "ERROR_CHECK": {
+                },
+            "PROPS": {
+                "size": 32,
+                "maxlength": 100,
+                "class": "textForm"
+            }
+        },                  
+        {
+            "NAME": "snsName",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {"label": [""],"value": [""]}
+        },
+        {
+            "NAME": "snsUid",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {"label": [""],"value": [""]}
+        },
+        {
+            "NAME": "tokenSecret",
+            "TITLE": "",
+            "TYPE": "HIDDEN",
+            "ERROR_CHECK": {},
+            "PROPS": {"label": [""],"value": [""]}
+        }        
+
+    ]
+}
