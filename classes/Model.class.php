@@ -5,7 +5,6 @@ class Model{
 	var $status;
 	var $userInfo;
 	var $postData;
-	var $allowLanguage = array('ja','en','ch');
 
 	public function __construct(){
 		
