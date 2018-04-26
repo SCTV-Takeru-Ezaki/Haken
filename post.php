@@ -30,7 +30,7 @@ if(empty($clientId)){
 }
 
 //------------------設定項目-------------------------
-define("REALTIME_FLAG", 1);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
+define("REALTIME_FLAG", 0);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
 $mailflg = 1;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
 $formPath="/home/pituser/public_html/form/";//form設置先のパス
 $facebook_clm=0;
@@ -66,7 +66,7 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 	$im = "uploads/".md5(implode("\t",$_POST)).".png";
 }
 //$title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
-//$body = $postData["enquete5"];//$postData["enquete5"];
+//$body = $postData["enquete4"];//$postData["enquete5"];
 
 //$postData["enquete2"] = !empty($postData["snsName"])?$postData["snsName"]:$postData["enquete2"];
 
@@ -90,11 +90,7 @@ $newDb = new DB;
 $db = $newDb->conn();
 $db->beginTransaction();
 
-//返信メール
-if($mailflg){
-	require_once(BASE_DIR."/lib/MailSave.php");
-	$ms = new MailSave($db);
-}
+
 
 //emailアドレスを取り出す
 if(!empty($postData)){
@@ -110,6 +106,12 @@ if(!empty($postData)){
 }else{
 	$file->log("EMPTY POST!!");
 	exit;
+}
+
+//返信メール
+if($mailflg && !empty($EMAIL)){
+	require_once(BASE_DIR."/lib/MailSave.php");
+	$ms = new MailSave($db);
 }
 
 $file->log("EMAIL:{$EMAIL}");
@@ -248,7 +250,7 @@ $returnId = "0{$mid}";
 
 // メール送信
 if($mailflg){
-$ms->execAutoResponse($returnId, "", "", $EMAIL);
+$ms->execAutoResponse($returnId, $body, $title, $EMAIL);
 $datetime = date("Y-m-d H:i:s");
 $ms->logs("send mail $returnId $co $datetime");
 }
