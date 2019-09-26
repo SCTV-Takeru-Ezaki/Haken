@@ -88,27 +88,66 @@ input[type="checkbox"],input[type="radio"] {
   margin-right:auto;
   padding-bottom: 1.5em;
 }
-#submit {
+#submitButton {
   max-width:320px;
-}
-#edit {
-  margin-right: 2em;
 }
 label {
   font-size: 1.5em;
 }
-@media screen and (min-width: 980px) {
-  #bg{width:768px;}
-  .main{width:568px;}
+@media screen and (min-width: 320px) {
+  input[type=file]{width:288px;}
+  /* 項目文字修飾 */
+  .itemTitle {
+    padding-top:2em;
+    color:#1a5974;
+    font-weight: bold;
+    font-size:1.2em;
+    display:inline-block;
+    vertical-align: middle;
+  }
+  #editButton{
+    margin-right: 1em;
+    font-weight: bold;
+  }
+  #submitWrapper #submitButton{
+    width:200px !important;
+  }
+
 }
-@media screen and (max-width: 870px) {
-  #bg,.main{max-width:468px;}
+@media screen and (min-width:480px) { 
+  #bg,#banner,#submitWrapper{width:80vw;}
+  /* 項目文字修飾 */
+  .itemTitle {
+    padding-top:2em;
+    color:#1a5974;
+    font-weight: bold;
+    font-size:1.2em;
+    display:inline-block;
+    vertical-align: middle;
+  }
+  #editButton{
+    font-weight: bold;
+    margin-right: 1em;
+  }
+  #submitWrapper #submitButton{
+    width:200px !important;
+  }
+
 }
-@media screen and (max-width: 767px) {
-  #bg,.main{max-width:468px;}
-}
-@media screen and (max-width: 320px) {
-  input[type=file]{width:230px;}
+@media screen and (min-width: 767px){
+  #bg,#banner,#submitWrapper{width:640px;}
+  /* 項目文字修飾 */
+  .itemTitle {
+    padding-top:3em;
+    color:#1a5974;
+    font-weight: bold;
+    font-size:1.5em;
+    display:inline-block;
+    vertical-align: middle;
+  }
+  #editButton {
+    margin-right: 2em;
+  }
 }
 #result {
   font-size: 1.5em;

@@ -40,8 +40,9 @@ class User{
 		}
 
 		//ステータスにあわせた」画像データを格納
-		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
-		$this->model->postData['image'] = $this->setUploadFile($files);
+#		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
+#		$this->model->postData['image'] = $this->setUploadFile($files);
+		$this->model->postData['image'] = $this->setUploadFile2($this->model->postData['image']);
 
 		//バリデータチェック 各全半角の自動コンバートは
 		foreach($this->model->init['enqueteList'] as $k => $enq){
@@ -50,19 +51,28 @@ class User{
 				//ポストデータからチェックする値を抽出
 				$value = (!empty($this->model->postData[$name]))?$this->model->postData[$name]:"";
 				if($key == 'FILESIZE'){
-					 $checker = new Validator($key,filesize($this->model->postData['image']),$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
+#					 $checker = new Validator($key,filesize($this->model->postData['image']),$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
 				}else{
 					$checker = new Validator($key,$value,$this->model,$enq['ERROR_CHECK']['AUTO_CONVERT']);
 				}
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
 				error_log("EEROR:".$checker->getResult());
 				//if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->postData['image']}".filesize($this->model->postData['image']));
-				if($key == 'FILETYPE') error_log("FILETYPE CHECK:{$this->model->postData['image']}/".$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]);
+#				if($key == 'FILETYPE') error_log("FILETYPE CHECK:{$this->model->postData['image']}/".$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]);
 			}
 		}
 //		print_r($this->model->init['enqueteList']);
 		$this->model->postData = Utility::htmlspecialchars_array($this->model->postData);
 	}
+	private function setUploadFile2($files){
+		if(preg_match("/削除/",$this->model->getValue($this->model->postData,'CMD'))){
+			return false;
+		}
+
+		return $files;
+
+	}
+
 	private function setUploadFile($files){
 		$post = (Utility::isUrlEncoded($_POST))? Utility::urldecode_array($_POST) : $_POST;
 		$get = (Utility::isUrlEncoded($_GET))? Utility::urldecode_array($_GET) : $_GET;

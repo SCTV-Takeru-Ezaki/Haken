@@ -29,6 +29,7 @@ $model = new Model();
 $init = new JSONLoader(INIT_FILE);
 $model->setInit($init->getJsonData());
 
+
 $errorMessage = new JSONLoader(ERROR_MESSAGE_FILE);
 $model->setErrorMessage($errorMessage->getJsonData());
 
