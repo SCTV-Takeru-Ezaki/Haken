@@ -11,7 +11,7 @@ class FormView{
 	private function loadTemplate(){
 		//PHP7に対応
 		$this->templateHtml = new simple_html_dom();
-	    $contents = file_get_contents($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
+	    if(!empty($this->model->userInfo['STATUS']['page'])) $contents = file_get_contents($this->model->init['templateDir'].$this->model->userInfo['STATUS']['page'].'.html');
 	    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE) return false;
 
 	    $this->templateHtml->load($contents, false, false);
@@ -37,6 +37,7 @@ class FormView{
 				break;
 			default:
 				header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+				exit;
 				break;
 		}
 	}
@@ -402,7 +403,10 @@ class FormView{
 	}
 
 	private function checkWrongAccess(){
-		if(!preg_match("/{$_SERVER['SERVER_NAME']}/", $_SERVER['HTTP_REFERER']) && empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])) header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+		if(!preg_match("/{$_SERVER['SERVER_NAME']}/", $_SERVER['HTTP_REFERER']) && empty($this->model->postData['submit']) && empty($this->model->postData['CMD'])){
+			header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+			exit;
+		}
 	}
 
 	private function publish() {
