@@ -1,4 +1,4 @@
 <?php
-function __autoload($name){
-	require_once("classes/{$name}.class.php");
-}
+spl_autoload_register(function ($class) {
+    include 'classes/' . $class . '.class.php';
+});
