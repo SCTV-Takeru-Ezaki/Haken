@@ -7,14 +7,18 @@ class Utility{
 	public static function htmlspecialchars_array($input){
 		array_walk_recursive(
 			$input,
-			create_function('&$value, $key', '$value=htmlspecialchars($value,ENT_QUOTES);')
+			function(&$value,$key){
+				return $value=htmlspecialchars($value,ENT_QUOTES);
+			}
 		);
 		return $input;
 	}
 	public static function htmlspecialchars_decode_array($input){
 		array_walk_recursive(
 			$input,
-			create_function('&$value, $key', '$value=htmlspecialchars_decode($value,ENT_QUOTES);')
+			function(&$value,$key){
+				return $value=htmlspecialchars_decode($value,ENT_QUOTES);
+			}
 		);
 		return $input;
 	}
