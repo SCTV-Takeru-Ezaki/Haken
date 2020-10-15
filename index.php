@@ -14,6 +14,8 @@ define("UPLOAD_DIR","uploads/");
 define("UPLOAD_MAXSIZE",5);
 define("THUMBNAIL_S_SIZE",512);
 
+define("ALLOW_PAGES",array("input","confirm","post","error","closed"));
+
 define("INIT_FILE","init/init.json");
 define("ERROR_MESSAGE_FILE","init/errorMessage.json");
 
@@ -39,4 +41,5 @@ $user = new User($model);
 //インターフェース構築＆表示
 $view = new FormView($model);
 $view->display();
+
 exit;

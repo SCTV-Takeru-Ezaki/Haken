@@ -171,7 +171,14 @@ class User{
 		return $this->checkStatus();
 	}
 	private function checkStatus(){
-		return (!is_array($this->checkTerm()))? ((!empty($_GET))? $_GET : false):$this->checkTerm();
+		return (!is_array($this->checkTerm()))? ((!empty($_GET))? $this->checkGetValue($_GET) : false):$this->checkTerm();
+	}
+	private function checkGetValue($value){
+		//pageの値をチェック
+		if(!empty($value['page'])) {
+			$value['page'] = (in_array($value['page'], ALLOW_PAGES)) ? $_GET["page"] : "error";
+		}
+		return $value;
 	}
 	private function checkTerm(){
 		$conf = array('mode' => 0777, 'timeFormat' => '%X %x');

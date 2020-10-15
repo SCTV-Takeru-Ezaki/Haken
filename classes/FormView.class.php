@@ -36,11 +36,14 @@ class FormView{
 
 				break;
 			default:
-				header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+				header('Location: '.$this->removevar("page",HTTP_SCRIPT_DIR).'page=input');
 				exit;
 				break;
 		}
 	}
+	private function removevar($var, $query_string) { 
+		return preg_replace("/(".$var."=[^&]*(&amp;|$))/i","",$query_string); 
+	} 
 	private function createPostView(){
 		$this->model->postData = (Utility::isOnlySjisDevice($this->model->userInfo['CARRIER'],$this->model->userInfo['DEVICE']) && !Utility::isUrlEncoded($this->model->postData))? Utility::convertencoding_array2($this->model->postData) : $this->model->postData;
 		if(empty($_SERVER['HTTP_REFERER'])){
