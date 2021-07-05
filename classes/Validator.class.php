@@ -48,8 +48,9 @@ class Validator{
 		return $result;
 	}
 	private function isntFILESIZE($value = ''){
-		error_log($value." < ".UPLOAD_MAXSIZE*1024*1024);
-		return ($value < UPLOAD_MAXSIZE*1024*1024)?0:1;
+		if($value != ''){
+			return ($value < UPLOAD_MAXSIZE*1024*1024)?0:1;
+		}
 	}
 	//バリデータ　10または11ケタの数字以外でエラー
 	//コンバート　全角スペース、数字を半角にコンバートしたあとスペースを削除

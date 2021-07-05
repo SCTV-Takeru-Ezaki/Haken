@@ -6,12 +6,11 @@
     "basicAuth":true,
     "enqueteList": [
         {
-            "NAME": "image",
+            "NAME": "imageFile",
             "TITLE": "画像(必須)",
             "TYPE": "FILE",
             "ERROR_CHECK": {
                 "REQUIRE": 0,
-                "FILETYPE": 0,
                 "FILESIZE": 5
             },
             "PROPS": {}
@@ -34,31 +33,6 @@
         },
         {
             "NAME": "enquete2",
-            "TITLE": "",
-            "TYPE": "HIDDEN",
-            "ERROR_CHECK": {
-                },
-            "PROPS": {
-		"label": [""],
-                "value":["form"]
-            }
-        },
-        {
-            "NAME": "enquete3",
-            "TITLE": "メールアドレス(必須)",
-            "TYPE": "TEXT",
-            "ERROR_CHECK": {
-                "REQUIRE": 0,
-                "EMAIL":0
-                },
-            "PROPS": {
-                "size": 32,
-                "maxlength": 255,
-                "class": "textForm"
-            }
-        },
-        {
-            "NAME": "enquete4",
             "TITLE": "ニックネーム(20文字以内、任意)",
             "TYPE": "TEXT",
             "ERROR_CHECK": {
@@ -70,7 +44,7 @@
             }
         },        
         {
-            "NAME": "enquete5",
+            "NAME": "enquete3",
             "TITLE": "メッセージ(100文字以内、任意)",
             "TYPE": "TEXTAREA",
             "ERROR_CHECK": {

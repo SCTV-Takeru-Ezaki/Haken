@@ -40,9 +40,10 @@ class User{
 		}
 
 		//ステータスにあわせた」画像データを格納
-#		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
-#		$this->model->postData['image'] = $this->setUploadFile($files);
-		$this->model->postData['image'] = $this->setUploadFile2($this->model->postData['image']);
+		#		$files = (Utility::isUrlEncoded($_FILES))? Utility::urldecode_array($_FILES) : $_FILES;
+		#		$this->model->postData['image'] = $this->setUploadFile($files);
+		$files = $_FILES['imageFile'];
+		$this->model->postData['imageFile'] = $this->setUploadFile($files);
 
 		//バリデータチェック 各全半角の自動コンバートは
 		foreach($this->model->init['enqueteList'] as $k => $enq){
@@ -57,8 +58,6 @@ class User{
 				}
 				$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key] = $checker->getResult();
 				error_log("EEROR:".$checker->getResult());
-				//if($key == 'FILESIZE') error_log("FILESIZE CHECK:{$this->model->postData['image']}".filesize($this->model->postData['image']));
-#				if($key == 'FILETYPE') error_log("FILETYPE CHECK:{$this->model->postData['image']}/".$this->model->init['enqueteList'][$k]['ERROR_CHECK'][$key]);
 			}
 		}
 //		print_r($this->model->init['enqueteList']);
@@ -88,13 +87,13 @@ class User{
 			return false;
 		}
 		//SNSプラグインから画像を渡された場合
-		if(!empty($get['image'])) return base64_decode($get['image']);
+		if(!empty($get['imageFile'])) return base64_decode($get['imageFile']);
 		//編集モードだった場合
-		if(!empty($post['image']) && empty($files["image"]["tmp_name"])) return $post['image'];
+		if(!empty($post['imageFile']) && empty($files["imageFile"]["tmp_name"])) return $post['imageFile'];
 		//通常投稿(確認画面)
-		if(empty($post['image']) && !empty($files["image"]["tmp_name"])){
+		if(empty($post['imageFile']) && !empty($files["tmp_name"])){
 			$finfo = finfo_open(FILEINFO_MIME_TYPE);
-			$mimeType = strtolower(finfo_file($finfo, $files["image"]["tmp_name"]));
+			$mimeType = strtolower(finfo_file($finfo, $files["tmp_name"]));
 			finfo_close($finfo);
 
 			$new = "";
@@ -103,12 +102,12 @@ class User{
 				$v = strtolower($v);
 				if(preg_match("/{$v}/",$mimeType)){
 					$ext = $v;
-					$tmpName = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp";
+					$tmpName = UPLOAD_DIR.md5(uniqid($files["name"].rand(),1))."_tmp";
 					// $tmp = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_tmp.{$v}";
 					$tmp = $tmpName.".{$v}";
-					$ori = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1))."_ori".".{$v}";
-					$new = UPLOAD_DIR.md5(uniqid($files["image"]["name"].rand(),1)).".{$v}";
-					@move_uploaded_file($files["image"]["tmp_name"], $tmp)?$tmp:false;
+					$ori = UPLOAD_DIR.md5(uniqid($files["name"].rand(),1))."_ori".".{$v}";
+					$new = UPLOAD_DIR.md5(uniqid($files["name"].rand(),1)).".{$v}";
+					@move_uploaded_file($files["tmp_name"], $tmp)?$tmp:false;
 					// 動画GIF対応(↑$tmpName追加,$tmp修正)
 					$image = new Imagick();
 					$image->readImage($tmp);
