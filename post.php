@@ -31,14 +31,14 @@ if(empty($clientId)){
 
 //------------------設定項目-------------------------
 define("REALTIME_FLAG", 0);// リアルタイムフラグ チェックDEL時：1,チェックUP：0
-$mailflg = 1;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
+$mailflg = 0;//自動返信メールの有無　有：1,無：0(VM上で作業行う場合など)
 $formPath="/home/pituser/public_html/form/";//form設置先のパス
 $facebook_clm=0;
 // $formPath="/home/pituser/public_html/client/{$clientId}/form/";
 //---------------------------------------------------
 
 $path_to_json = $formPath."init/init.json";
-$file = &Log::factory('file', "/home/pituser/log/out.log", 'POST.PHP');
+$file = Log::factory('file', "/add_disk1/pituser/log/out.log", 'POST.PHP');
 
 if(duplicateChk()){
 	$retData = array("error" =>"送信できませんでした。既にデータが送信されています。");
@@ -57,7 +57,7 @@ if(empty($_POST)){
 $postData = (isUrlEncoded($_POST))? urldecode_array($_POST) : $_POST;
 
 
-$im = $postData["image"]; // 画像名
+$im = $postData["imageFile"]; // 画像名
 if(preg_match("/data:[^,]+,.+/i", $im)){
 	$im = preg_replace("/data:[^,]+,/i","",$im);
 	$im = base64_decode($im);
@@ -65,8 +65,8 @@ if(preg_match("/data:[^,]+,.+/i", $im)){
 	imagepng($image ,$formPath."uploads/".md5(implode("\t",$_POST)).".png");
 	$im = "uploads/".md5(implode("\t",$_POST)).".png";
 }
-//$title = $postData["enquete4"];//$postData["enquete4"];//ニックネーム
-//$body = $postData["enquete4"];//$postData["enquete5"];
+$title = $postData["enquete2"];//$postData["enquete4"];//ニックネーム
+$body = $postData["enquete3"];//$postData["enquete5"];
 
 //$postData["enquete2"] = !empty($postData["snsName"])?$postData["snsName"]:$postData["enquete2"];
 

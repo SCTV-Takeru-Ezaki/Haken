@@ -58,20 +58,6 @@ class FormView{
 		}
 
 		$tag = "";
-		#画像データの取り回しをBase64標準としたので廃止 2018/6/13
-#		if(!empty($this->model->postData['image'])){
-#			$ext = explode(".",$this->model->postData['image']);
-#			$n = count($ext);
-#			$image = new Imagick($this->model->postData['image']);
-#			$width_o = $image->getImageWidth();
-#			$height_o = $image->getImageHeight();
-#			if ($height_o < $width_o)
-#				$image->thumbnailImage(0, 512);
-#			else
-#				$image->thumbnailImage(512, 0);
-#
-#			$this->model->postData['image'] = "data:image/".$ext[$n-1].";base64,".base64_encode($image);
-#		}
 		if(empty($this->model->postData['snstype']) || empty($this->model->postData['snsid'])){
 			$this->model->postData['snstype']	= (!empty($this->model->postData['snsName']))? $this->model->postData['snsName'] : '';
 			$this->model->postData['snsid']	= (!empty($this->model->postData['snsUid']))? $this->model->postData['snsUid'] : '';
@@ -86,6 +72,7 @@ class FormView{
 		//旧方式　たぶん今後は使わない
 		// $result = $this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$post);
 		$this->model->postData = Utility::htmlspecialchars_decode_array($this->model->postData);
+
 		$result = json_decode($this->sendPostQuery(HTTP_SCRIPT_DIR.'/'.POST_EXEC,$this->model->postData),true);
 
 		if(!empty($result['id'])){
@@ -104,7 +91,6 @@ class FormView{
 
 	private function createConfirmView(){
 		$this->checkWrongAccess();
-
 		foreach($this->model->init['enqueteList'] as $k => $enq){
 			foreach($enq['ERROR_CHECK'] as $error => $value){
 				if($value != 0 || $this->model->getValue($_POST,'CMD') == 'IMGDELETE'){
