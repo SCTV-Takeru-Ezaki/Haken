@@ -36,7 +36,8 @@ class FormView{
 
 				break;
 			default:
-				header('Location: '.$this->removevar("page",HTTP_SCRIPT_DIR).'page=input');
+			header('Location: '.HTTP_SCRIPT_DIR.'/?page=input');
+			//header('Location: '.$this->removevar("page",HTTP_SCRIPT_DIR).'page=input');
 				exit;
 				break;
 		}
@@ -204,7 +205,7 @@ class FormView{
 						$tag = "<div class=\"pure-g-r\"><div id=\"uploadImage\" class=\"pure-u-1\"><img width=\"240\" src=\"{$this->model->postData[$enq['NAME']]}\"><input type=\"HIDDEN\" name=\"{$enq['NAME']}\" value=\"{$this->model->postData[$enq['NAME']]}\">{$deleteButton}</div></div>\n";
 					}else{
 						$tag = "<input type=\"{$enq['TYPE']}\" name=\"imageFile\" accept=\"{$exts}\" style=\"{$style}\">\n";
-						$tag .= "<input type=\"hidden\" name=\"{$enq['NAME']}\">{$enq['NAME']}\n";
+						$tag .= "<input type=\"hidden\" name=\"{$enq['NAME']}\">\n";
 					}
 
 					break;
